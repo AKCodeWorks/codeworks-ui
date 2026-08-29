@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { Attachment } from 'svelte/attachments';
-	import { cw } from '$lib/utils/cw';
+	import { cw } from '$lib/utils';
 
 	const defaultColors = ['#22d3ee', '#818cf8', '#e879f9', '#facc15', '#34d399'];
 

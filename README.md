@@ -12,7 +12,7 @@ bun run lint            # Prettier and ESLint
 bun run build            # registry payloads + production site
 ```
 
-The native `shadcn-svelte registry build` command validates `registry.json`, rewrites aliases for consuming projects, resolves local registry dependencies, and generates installable payloads in `static/r`.
+The native `shadcn-svelte registry build` command validates `registry.json`, rewrites aliases for consuming projects, resolves local registry dependencies, and generates installable payloads in `static/r`. Shared utility functions live in the `utils` registry item so the CLI installs them at the consuming project's configured `aliases.utils` path.
 
 ## Structure
 

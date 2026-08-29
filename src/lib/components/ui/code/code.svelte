@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cw } from '$lib/utils/cw';
+	import { cw } from '$lib/utils';
 	import { highlightCode, type CodeLanguage } from './highlighter';
 
 	let {

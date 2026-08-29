@@ -11,13 +11,13 @@
 	},
 	"items": [
 		{
-			"name": "cw",
+			"name": "utils",
 			"type": "registry:lib",
 			"title": "Class name utility",
 			"description": "Merges conditional Tailwind CSS classes without conflicts.",
 			"dependencies": ["clsx@^2.1.1", "tailwind-merge@^3.6.0"],
 			"registryDependencies": [],
-			"files": [{ "path": "src/lib/utils/cw.ts", "type": "registry:lib" }]
+			"files": [{ "path": "src/lib/utils.ts", "type": "registry:lib" }]
 		},
 		{
 			"name": "button",
@@ -25,7 +25,7 @@
 			"title": "Button",
 			"description": "Displays a button or a link with a set of accessible visual variants.",
 			"dependencies": ["bits-ui@^2.19.0"],
-			"registryDependencies": ["local:cw"],
+			"registryDependencies": ["local:utils"],
 			"files": [
 				{ "path": "src/lib/components/ui/button/button.svelte", "type": "registry:ui" },
 				{ "path": "src/lib/components/ui/button/index.ts", "type": "registry:ui" }
@@ -52,7 +52,7 @@
 			"title": "Accordion",
 			"description": "A vertically stacked set of interactive headings that reveal content.",
 			"dependencies": ["bits-ui@^2.19.0"],
-			"registryDependencies": ["local:cw"],
+			"registryDependencies": ["local:utils"],
 			"files": [
 				{ "path": "src/lib/components/ui/accordion/accordion.svelte", "type": "registry:ui" },
 				{ "path": "src/lib/components/ui/accordion/accordion-item.svelte", "type": "registry:ui" },
@@ -84,7 +84,7 @@
 			"title": "Avatar",
 			"description": "An image element with a reliable fallback for representing a user or entity.",
 			"dependencies": ["bits-ui@^2.19.0"],
-			"registryDependencies": ["local:cw"],
+			"registryDependencies": ["local:utils"],
 			"files": [
 				{ "path": "src/lib/components/ui/avatar/avatar.svelte", "type": "registry:ui" },
 				{ "path": "src/lib/components/ui/avatar/avatar-image.svelte", "type": "registry:ui" },
@@ -109,7 +109,7 @@
 			"title": "Code",
 			"description": "Syntax-highlighted code display with Svelte support and one-click copying.",
 			"dependencies": ["shiki@^4.4.3"],
-			"registryDependencies": ["local:cw"],
+			"registryDependencies": ["local:utils"],
 			"files": [
 				{ "path": "src/lib/components/ui/code/code.svelte", "type": "registry:ui" },
 				{ "path": "src/lib/components/ui/code/highlighter.ts", "type": "registry:ui" },
@@ -137,7 +137,7 @@
 			"title": "Install",
 			"description": "A persistent package-manager switcher for installation commands.",
 			"dependencies": ["bits-ui@^2.19.0"],
-			"registryDependencies": ["local:cw", "local:code"],
+			"registryDependencies": ["local:utils", "local:code"],
 			"files": [
 				{ "path": "src/lib/components/ui/install/install.svelte", "type": "registry:ui" },
 				{ "path": "src/lib/components/ui/install/index.ts", "type": "registry:ui" }
@@ -167,7 +167,7 @@
 			"title": "Holographic",
 			"description": "Applies an animated holographic spectrum and shimmer over any content.",
 			"dependencies": [],
-			"registryDependencies": ["local:cw"],
+			"registryDependencies": ["local:utils"],
 			"files": [
 				{
 					"path": "src/lib/components/ui/holographic/holographic.svelte",
@@ -197,7 +197,7 @@
 			"title": "Link Preview",
 			"description": "Lazily displays a linked page in a hover and keyboard-focus preview.",
 			"dependencies": ["bits-ui@^2.19.0"],
-			"registryDependencies": ["local:cw"],
+			"registryDependencies": ["local:utils"],
 			"files": [
 				{
 					"path": "src/lib/components/ui/link-preview/link-preview.svelte",

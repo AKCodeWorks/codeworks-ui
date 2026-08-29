@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Avatar as AvatarPrimitive } from 'bits-ui';
-	import { cw } from '$lib/utils/cw';
+	import { cw } from '$lib/utils';
 
 	let {
 		ref = $bindable(null),

@@ -8,7 +8,7 @@
 		"bits-ui@^2.19.0"
 	],
 	"registryDependencies": [
-		"./cw.json"
+		"./utils.json"
 	],
 	"meta": {
 		"docs": {
@@ -39,17 +39,17 @@
 	},
 	"files": [
 		{
-			"content": "<script lang=\"ts\">\n\timport { Avatar as AvatarPrimitive } from 'bits-ui';\n\timport { cw } from '$UTILS$/cw';\n\n\tlet {\n\t\tref = $bindable(null),\n\t\tclass: className,\n\t\t...restProps\n\t}: AvatarPrimitive.RootProps = $props();\n</script>\n\n<AvatarPrimitive.Root\n\tbind:ref\n\tdata-slot=\"avatar\"\n\tclass={cw('relative flex size-10 shrink-0 overflow-hidden rounded-full', className)}\n\t{...restProps}\n/>\n",
+			"content": "<script lang=\"ts\">\n\timport { Avatar as AvatarPrimitive } from 'bits-ui';\n\timport { cw } from '$UTILS$';\n\n\tlet {\n\t\tref = $bindable(null),\n\t\tclass: className,\n\t\t...restProps\n\t}: AvatarPrimitive.RootProps = $props();\n</script>\n\n<AvatarPrimitive.Root\n\tbind:ref\n\tdata-slot=\"avatar\"\n\tclass={cw('relative flex size-10 shrink-0 overflow-hidden rounded-full', className)}\n\t{...restProps}\n/>\n",
 			"type": "registry:ui",
 			"target": "avatar/avatar.svelte"
 		},
 		{
-			"content": "<script lang=\"ts\">\n\timport { Avatar as AvatarPrimitive } from 'bits-ui';\n\timport { cw } from '$UTILS$/cw';\n\n\tlet {\n\t\tref = $bindable(null),\n\t\tclass: className,\n\t\t...restProps\n\t}: AvatarPrimitive.ImageProps = $props();\n</script>\n\n<AvatarPrimitive.Image\n\tbind:ref\n\tdata-slot=\"avatar-image\"\n\tclass={cw('aspect-square size-full object-cover', className)}\n\t{...restProps}\n/>\n",
+			"content": "<script lang=\"ts\">\n\timport { Avatar as AvatarPrimitive } from 'bits-ui';\n\timport { cw } from '$UTILS$';\n\n\tlet {\n\t\tref = $bindable(null),\n\t\tclass: className,\n\t\t...restProps\n\t}: AvatarPrimitive.ImageProps = $props();\n</script>\n\n<AvatarPrimitive.Image\n\tbind:ref\n\tdata-slot=\"avatar-image\"\n\tclass={cw('aspect-square size-full object-cover', className)}\n\t{...restProps}\n/>\n",
 			"type": "registry:ui",
 			"target": "avatar/avatar-image.svelte"
 		},
 		{
-			"content": "<script lang=\"ts\">\n\timport { Avatar as AvatarPrimitive } from 'bits-ui';\n\timport { cw } from '$UTILS$/cw';\n\n\tlet {\n\t\tref = $bindable(null),\n\t\tclass: className,\n\t\t...restProps\n\t}: AvatarPrimitive.FallbackProps = $props();\n</script>\n\n<AvatarPrimitive.Fallback\n\tbind:ref\n\tdata-slot=\"avatar-fallback\"\n\tclass={cw(\n\t\t'flex size-full items-center justify-center rounded-full bg-muted text-sm font-medium',\n\t\tclassName\n\t)}\n\t{...restProps}\n/>\n",
+			"content": "<script lang=\"ts\">\n\timport { Avatar as AvatarPrimitive } from 'bits-ui';\n\timport { cw } from '$UTILS$';\n\n\tlet {\n\t\tref = $bindable(null),\n\t\tclass: className,\n\t\t...restProps\n\t}: AvatarPrimitive.FallbackProps = $props();\n</script>\n\n<AvatarPrimitive.Fallback\n\tbind:ref\n\tdata-slot=\"avatar-fallback\"\n\tclass={cw(\n\t\t'flex size-full items-center justify-center rounded-full bg-muted text-sm font-medium',\n\t\tclassName\n\t)}\n\t{...restProps}\n/>\n",
 			"type": "registry:ui",
 			"target": "avatar/avatar-fallback.svelte"
 		},

@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { Tabs } from 'bits-ui';
 	import { Code } from '$lib/components/ui/code';
-	import { cw } from '$lib/utils/cw';
+	import { cw } from '$lib/utils';
 
 	export type InstallValue = {
 		value: string;

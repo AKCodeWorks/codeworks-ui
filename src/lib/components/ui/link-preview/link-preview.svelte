@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { LinkPreview as LinkPreviewPrimitive } from 'bits-ui';
-	import { cw } from '$lib/utils/cw';
+	import { cw } from '$lib/utils';
 
 	let {
 		href,

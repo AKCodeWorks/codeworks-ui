@@ -1,6 +1,6 @@
 [
 	{
-		"name": "cw",
+		"name": "utils",
 		"title": "Class name utility",
 		"type": "registry:lib",
 		"description": "Merges conditional Tailwind CSS classes without conflicts.",
@@ -9,7 +9,7 @@
 			"tailwind-merge@^3.6.0"
 		],
 		"registryDependencies": [],
-		"relativeUrl": "cw.json"
+		"relativeUrl": "utils.json"
 	},
 	{
 		"name": "button",
@@ -20,7 +20,7 @@
 			"bits-ui@^2.19.0"
 		],
 		"registryDependencies": [
-			"local:cw"
+			"local:utils"
 		],
 		"meta": {
 			"docs": {
@@ -60,7 +60,7 @@
 			"bits-ui@^2.19.0"
 		],
 		"registryDependencies": [
-			"local:cw"
+			"local:utils"
 		],
 		"meta": {
 			"docs": {
@@ -100,7 +100,7 @@
 			"bits-ui@^2.19.0"
 		],
 		"registryDependencies": [
-			"local:cw"
+			"local:utils"
 		],
 		"meta": {
 			"docs": {
@@ -140,7 +140,7 @@
 			"shiki@^4.4.3"
 		],
 		"registryDependencies": [
-			"local:cw"
+			"local:utils"
 		],
 		"meta": {
 			"docs": {
@@ -180,7 +180,7 @@
 			"bits-ui@^2.19.0"
 		],
 		"registryDependencies": [
-			"local:cw",
+			"local:utils",
 			"local:code"
 		],
 		"meta": {
@@ -214,7 +214,7 @@
 		"description": "Applies an animated holographic spectrum and shimmer over any content.",
 		"dependencies": [],
 		"registryDependencies": [
-			"local:cw"
+			"local:utils"
 		],
 		"meta": {
 			"docs": {
@@ -259,7 +259,7 @@
 			"bits-ui@^2.19.0"
 		],
 		"registryDependencies": [
-			"local:cw"
+			"local:utils"
 		],
 		"meta": {
 			"docs": {
