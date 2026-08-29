@@ -1,0 +1,60 @@
+{
+	"$schema": "https://shadcn-svelte.com/schema/registry-item.json",
+	"name": "code",
+	"title": "Code",
+	"type": "registry:ui",
+	"description": "Syntax-highlighted code display with Svelte support and one-click copying.",
+	"dependencies": [
+		"shiki@^4.4.3"
+	],
+	"devDependencies": [
+		"shiki@^4.4.3"
+	],
+	"registryDependencies": [
+		"./cw.json"
+	],
+	"meta": {
+		"docs": {
+			"usage": "Pass the source text, its language, and an optional filename label. The highlighter is shared across every instance.",
+			"api": [
+				{
+					"name": "code",
+					"type": "string",
+					"default": "required"
+				},
+				{
+					"name": "language",
+					"type": "svelte | typescript | javascript | json | shellscript | text",
+					"default": "svelte"
+				},
+				{
+					"name": "label",
+					"type": "string",
+					"default": "language"
+				},
+				{
+					"name": "showCopy",
+					"type": "boolean",
+					"default": "true"
+				}
+			]
+		}
+	},
+	"files": [
+		{
+			"content": "<script lang=\"ts\">\n\timport { cw } from '$UTILS$/cw';\n\timport { highlightCode, type CodeLanguage } from './highlighter';\n\n\tlet {\n\t\tcode,\n\t\tlanguage = 'svelte',\n\t\tlabel = language,\n\t\tshowCopy = true,\n\t\tclass: className\n\t}: {\n\t\tcode: string;\n\t\tlanguage?: CodeLanguage;\n\t\tlabel?: string;\n\t\tshowCopy?: boolean;\n\t\tclass?: string;\n\t} = $props();\n\n\tlet copied = $state(false);\n\tconst lines = $derived(highlightCode(code, language));\n\n\tasync function copy() {\n\t\tawait navigator.clipboard.writeText(code);\n\t\tcopied = true;\n\t\tsetTimeout(() => (copied = false), 1500);\n\t}\n</script>\n\n<div\n\tdata-slot=\"code\"\n\tclass={cw('overflow-hidden rounded-lg border border-border bg-foreground', className)}\n>\n\t<div\n\t\tclass=\"flex h-11 items-center justify-between border-b border-white/10 px-4 text-xs text-white/60\"\n\t>\n\t\t<span>{label}</span>\n\t\t{#if showCopy}\n\t\t\t<button\n\t\t\t\tonclick={copy}\n\t\t\t\tclass=\"rounded px-2 py-1 transition-colors hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:outline-none\"\n\t\t\t\taria-label={`Copy ${label}`}\n\t\t\t>\n\t\t\t\t{copied ? 'Copied' : 'Copy'}\n\t\t\t</button>\n\t\t{/if}\n\t</div>\n\t<pre class=\"max-h-[34rem] overflow-auto bg-foreground p-4 font-mono text-[13px] leading-6\"><code\n\t\t\tclass=\"grid min-w-max\"\n\t\t\t>{#each lines as line, lineIndex (lineIndex)}<span class=\"min-h-6\"\n\t\t\t\t\t>{#each line as token, tokenIndex (`${tokenIndex}-${token.content}`)}<span\n\t\t\t\t\t\t\tstyle:color={token.color}\n\t\t\t\t\t\t\tclass:italic={Boolean(token.fontStyle && token.fontStyle & 1)}\n\t\t\t\t\t\t\tclass:font-bold={Boolean(token.fontStyle && token.fontStyle & 2)}\n\t\t\t\t\t\t\tclass:underline={Boolean(token.fontStyle && token.fontStyle & 4)}\n\t\t\t\t\t\t\t>{token.content}</span\n\t\t\t\t\t\t>{/each}</span\n\t\t\t\t>{/each}</code\n\t\t></pre>\n</div>\n",
+			"type": "registry:ui",
+			"target": "code/code.svelte"
+		},
+		{
+			"content": "import javascript from '@shikijs/langs/javascript';\nimport json from '@shikijs/langs/json';\nimport shellscript from '@shikijs/langs/shellscript';\nimport svelte from '@shikijs/langs/svelte';\nimport typescript from '@shikijs/langs/typescript';\nimport githubDark from '@shikijs/themes/github-dark';\nimport { createHighlighterCore } from 'shiki/core';\nimport { createJavaScriptRegexEngine } from 'shiki/engine/javascript';\n\nexport type CodeLanguage = 'svelte' | 'typescript' | 'javascript' | 'json' | 'shellscript' | 'text';\n\nconst highlighter = await createHighlighterCore({\n\tthemes: [githubDark],\n\tlangs: [svelte, typescript, javascript, json, shellscript],\n\tengine: createJavaScriptRegexEngine()\n});\n\nexport function highlightCode(code: string, language: CodeLanguage) {\n\treturn highlighter.codeToTokens(code.trimEnd(), {\n\t\tlang: language,\n\t\ttheme: 'github-dark'\n\t}).tokens;\n}\n\nexport function languageFromFilename(filename: string): CodeLanguage {\n\tif (filename.endsWith('.svelte')) return 'svelte';\n\tif (filename.endsWith('.ts')) return 'typescript';\n\tif (filename.endsWith('.js')) return 'javascript';\n\tif (filename.endsWith('.json')) return 'json';\n\treturn 'text';\n}\n",
+			"type": "registry:ui",
+			"target": "code/highlighter.ts"
+		},
+		{
+			"content": "export { default as Code } from './code.svelte';\nexport { languageFromFilename } from './highlighter';\nexport type { CodeLanguage } from './highlighter';\n",
+			"type": "registry:ui",
+			"target": "code/index.ts"
+		}
+	]
+}

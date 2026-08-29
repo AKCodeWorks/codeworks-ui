@@ -1,0 +1,313 @@
+[
+	{
+		"name": "cw",
+		"title": "Class name utility",
+		"type": "registry:lib",
+		"description": "Merges conditional Tailwind CSS classes without conflicts.",
+		"dependencies": [
+			"clsx@^2.1.1",
+			"tailwind-merge@^3.6.0"
+		],
+		"registryDependencies": [],
+		"relativeUrl": "cw.json"
+	},
+	{
+		"name": "button",
+		"title": "Button",
+		"type": "registry:ui",
+		"description": "Displays a button or a link with a set of accessible visual variants.",
+		"dependencies": [
+			"bits-ui@^2.19.0"
+		],
+		"registryDependencies": [
+			"local:cw"
+		],
+		"meta": {
+			"docs": {
+				"usage": "Use the href prop to render an anchor, or omit it to render a native button.",
+				"api": [
+					{
+						"name": "variant",
+						"type": "default | destructive | outline | secondary | ghost | link",
+						"default": "default"
+					},
+					{
+						"name": "size",
+						"type": "default | sm | lg | icon",
+						"default": "default"
+					},
+					{
+						"name": "href",
+						"type": "string",
+						"default": "—"
+					},
+					{
+						"name": "disabled",
+						"type": "boolean",
+						"default": "false"
+					}
+				]
+			}
+		},
+		"relativeUrl": "button.json"
+	},
+	{
+		"name": "accordion",
+		"title": "Accordion",
+		"type": "registry:ui",
+		"description": "A vertically stacked set of interactive headings that reveal content.",
+		"dependencies": [
+			"bits-ui@^2.19.0"
+		],
+		"registryDependencies": [
+			"local:cw"
+		],
+		"meta": {
+			"docs": {
+				"usage": "Compose Root, Item, Trigger, and Content. Every item needs a stable value.",
+				"api": [
+					{
+						"name": "type",
+						"type": "single | multiple",
+						"default": "required"
+					},
+					{
+						"name": "value",
+						"type": "string | string[]",
+						"default": "—"
+					},
+					{
+						"name": "disabled",
+						"type": "boolean",
+						"default": "false"
+					},
+					{
+						"name": "orientation",
+						"type": "vertical | horizontal",
+						"default": "vertical"
+					}
+				]
+			}
+		},
+		"relativeUrl": "accordion.json"
+	},
+	{
+		"name": "avatar",
+		"title": "Avatar",
+		"type": "registry:ui",
+		"description": "An image element with a reliable fallback for representing a user or entity.",
+		"dependencies": [
+			"bits-ui@^2.19.0"
+		],
+		"registryDependencies": [
+			"local:cw"
+		],
+		"meta": {
+			"docs": {
+				"usage": "Place Image and Fallback inside Root. Always provide descriptive alt text for meaningful images.",
+				"api": [
+					{
+						"name": "delayMs",
+						"type": "number",
+						"default": "0"
+					},
+					{
+						"name": "loadingStatus",
+						"type": "loading | loaded | error",
+						"default": "loading"
+					},
+					{
+						"name": "src",
+						"type": "string",
+						"default": "required"
+					},
+					{
+						"name": "alt",
+						"type": "string",
+						"default": "required"
+					}
+				]
+			}
+		},
+		"relativeUrl": "avatar.json"
+	},
+	{
+		"name": "code",
+		"title": "Code",
+		"type": "registry:ui",
+		"description": "Syntax-highlighted code display with Svelte support and one-click copying.",
+		"dependencies": [
+			"shiki@^4.4.3"
+		],
+		"registryDependencies": [
+			"local:cw"
+		],
+		"meta": {
+			"docs": {
+				"usage": "Pass the source text, its language, and an optional filename label. The highlighter is shared across every instance.",
+				"api": [
+					{
+						"name": "code",
+						"type": "string",
+						"default": "required"
+					},
+					{
+						"name": "language",
+						"type": "svelte | typescript | javascript | json | shellscript | text",
+						"default": "svelte"
+					},
+					{
+						"name": "label",
+						"type": "string",
+						"default": "language"
+					},
+					{
+						"name": "showCopy",
+						"type": "boolean",
+						"default": "true"
+					}
+				]
+			}
+		},
+		"relativeUrl": "code.json"
+	},
+	{
+		"name": "install",
+		"title": "Install",
+		"type": "registry:ui",
+		"description": "A persistent package-manager switcher for installation commands.",
+		"dependencies": [
+			"bits-ui@^2.19.0"
+		],
+		"registryDependencies": [
+			"local:cw",
+			"local:code"
+		],
+		"meta": {
+			"docs": {
+				"usage": "Pass package-manager command prefixes through values and the shared package or CLI arguments through script. Install joins them with one space and remembers the active manager.",
+				"api": [
+					{
+						"name": "values",
+						"type": "Array<{ value: string; command: string; label?: string; disabled?: boolean }>",
+						"default": "required"
+					},
+					{
+						"name": "script",
+						"type": "string",
+						"default": "required"
+					},
+					{
+						"name": "storageKey",
+						"type": "string",
+						"default": "codeworks-ui:package-manager"
+					}
+				]
+			}
+		},
+		"relativeUrl": "install.json"
+	},
+	{
+		"name": "holographic",
+		"title": "Holographic",
+		"type": "registry:ui",
+		"description": "Applies an animated holographic spectrum and shimmer over any content.",
+		"dependencies": [],
+		"registryDependencies": [
+			"local:cw"
+		],
+		"meta": {
+			"docs": {
+				"usage": "Wrap any content and optionally pass CSS color values. Shape and border radius are controlled through class; no radius is applied by default. Empty color arrays use the built-in spectrum, and reduced-motion preferences are respected.",
+				"api": [
+					{
+						"name": "colors",
+						"type": "string[]",
+						"default": "built-in spectrum"
+					},
+					{
+						"name": "intensity",
+						"type": "number (0–1)",
+						"default": "0.16"
+					},
+					{
+						"name": "duration",
+						"type": "number (milliseconds)",
+						"default": "5000"
+					},
+					{
+						"name": "class",
+						"type": "string",
+						"default": "—"
+					},
+					{
+						"name": "children",
+						"type": "Snippet",
+						"default": "required"
+					}
+				]
+			}
+		},
+		"relativeUrl": "holographic.json"
+	},
+	{
+		"name": "link-preview",
+		"title": "Link Preview",
+		"type": "registry:ui",
+		"description": "Lazily displays a linked page in a hover and keyboard-focus preview.",
+		"dependencies": [
+			"bits-ui@^2.19.0"
+		],
+		"registryDependencies": [
+			"local:cw"
+		],
+		"meta": {
+			"docs": {
+				"usage": "Pass a URL and optional link content. The iframe is created only after hover or keyboard focus opens the preview. Sites may prevent embedding through their security headers.",
+				"api": [
+					{
+						"name": "href",
+						"type": "string",
+						"default": "required"
+					},
+					{
+						"name": "title",
+						"type": "string",
+						"default": "Preview of {href}"
+					},
+					{
+						"name": "openDelay",
+						"type": "number",
+						"default": "300"
+					},
+					{
+						"name": "closeDelay",
+						"type": "number",
+						"default": "150"
+					},
+					{
+						"name": "disabled",
+						"type": "boolean",
+						"default": "false"
+					},
+					{
+						"name": "class",
+						"type": "string",
+						"default": "—"
+					},
+					{
+						"name": "contentClass",
+						"type": "string",
+						"default": "—"
+					},
+					{
+						"name": "iframeClass",
+						"type": "string",
+						"default": "—"
+					}
+				]
+			}
+		},
+		"relativeUrl": "link-preview.json"
+	}
+]

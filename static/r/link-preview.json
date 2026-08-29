@@ -1,0 +1,72 @@
+{
+	"$schema": "https://shadcn-svelte.com/schema/registry-item.json",
+	"name": "link-preview",
+	"title": "Link Preview",
+	"type": "registry:ui",
+	"description": "Lazily displays a linked page in a hover and keyboard-focus preview.",
+	"dependencies": [
+		"bits-ui@^2.19.0"
+	],
+	"registryDependencies": [
+		"./cw.json"
+	],
+	"meta": {
+		"docs": {
+			"usage": "Pass a URL and optional link content. The iframe is created only after hover or keyboard focus opens the preview. Sites may prevent embedding through their security headers.",
+			"api": [
+				{
+					"name": "href",
+					"type": "string",
+					"default": "required"
+				},
+				{
+					"name": "title",
+					"type": "string",
+					"default": "Preview of {href}"
+				},
+				{
+					"name": "openDelay",
+					"type": "number",
+					"default": "300"
+				},
+				{
+					"name": "closeDelay",
+					"type": "number",
+					"default": "150"
+				},
+				{
+					"name": "disabled",
+					"type": "boolean",
+					"default": "false"
+				},
+				{
+					"name": "class",
+					"type": "string",
+					"default": "—"
+				},
+				{
+					"name": "contentClass",
+					"type": "string",
+					"default": "—"
+				},
+				{
+					"name": "iframeClass",
+					"type": "string",
+					"default": "—"
+				}
+			]
+		}
+	},
+	"files": [
+		{
+			"content": "<script lang=\"ts\">\n\timport type { Snippet } from 'svelte';\n\timport { LinkPreview as LinkPreviewPrimitive } from 'bits-ui';\n\timport { cw } from '$UTILS$/cw';\n\n\tlet {\n\t\thref,\n\t\tchildren,\n\t\ttitle,\n\t\ttarget,\n\t\trel,\n\t\topenDelay = 300,\n\t\tcloseDelay = 150,\n\t\tdisabled = false,\n\t\tclass: className,\n\t\tcontentClass,\n\t\tiframeClass\n\t}: {\n\t\thref: string;\n\t\tchildren?: Snippet;\n\t\ttitle?: string;\n\t\ttarget?: '_self' | '_blank' | '_parent' | '_top';\n\t\trel?: string;\n\t\topenDelay?: number;\n\t\tcloseDelay?: number;\n\t\tdisabled?: boolean;\n\t\tclass?: string;\n\t\tcontentClass?: string;\n\t\tiframeClass?: string;\n\t} = $props();\n\n\tlet open = $state(false);\n\tlet loading = $state(true);\n\tconst frameTitle = $derived(title ?? `Preview of ${href}`);\n\n\tfunction handleOpenChange(nextOpen: boolean) {\n\t\topen = nextOpen;\n\t\tif (nextOpen) loading = true;\n\t}\n</script>\n\n<LinkPreviewPrimitive.Root\n\t{open}\n\tonOpenChange={handleOpenChange}\n\t{openDelay}\n\t{closeDelay}\n\t{disabled}\n>\n\t<LinkPreviewPrimitive.Trigger>\n\t\t{#snippet child({ props })}\n\t\t\t<!-- eslint-disable svelte/no-navigation-without-resolve -->\n\t\t\t<a\n\t\t\t\t{...props}\n\t\t\t\t{href}\n\t\t\t\t{target}\n\t\t\t\t{rel}\n\t\t\t\trole={undefined}\n\t\t\t\tclass={cw(\n\t\t\t\t\t'font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none',\n\t\t\t\t\tclassName\n\t\t\t\t)}\n\t\t\t>\n\t\t\t\t{#if children}\n\t\t\t\t\t{@render children()}\n\t\t\t\t{:else}\n\t\t\t\t\t{href}\n\t\t\t\t{/if}\n\t\t\t</a>\n\t\t\t<!-- eslint-enable svelte/no-navigation-without-resolve -->\n\t\t{/snippet}\n\t</LinkPreviewPrimitive.Trigger>\n\n\t<LinkPreviewPrimitive.Portal>\n\t\t<LinkPreviewPrimitive.Content\n\t\t\tsideOffset={8}\n\t\t\tcollisionPadding={16}\n\t\t\tclass={cw(\n\t\t\t\t'bg-popover text-popover-foreground z-50 w-[min(24rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-border shadow-xl outline-none',\n\t\t\t\tcontentClass\n\t\t\t)}\n\t\t>\n\t\t\t<div class=\"relative h-56 bg-muted\">\n\t\t\t\t{#if open}\n\t\t\t\t\t<iframe\n\t\t\t\t\t\tsrc={href}\n\t\t\t\t\t\ttitle={frameTitle}\n\t\t\t\t\t\tloading=\"lazy\"\n\t\t\t\t\t\tsandbox=\"\"\n\t\t\t\t\t\tonload={() => (loading = false)}\n\t\t\t\t\t\tclass={cw('h-full w-full border-0 bg-background', iframeClass)}\n\t\t\t\t\t></iframe>\n\t\t\t\t{/if}\n\t\t\t\t{#if loading}\n\t\t\t\t\t<div\n\t\t\t\t\t\tclass=\"absolute inset-0 grid place-items-center bg-muted text-sm text-muted-foreground\"\n\t\t\t\t\t>\n\t\t\t\t\t\tLoading preview…\n\t\t\t\t\t</div>\n\t\t\t\t{/if}\n\t\t\t</div>\n\t\t\t<div\n\t\t\t\tclass=\"truncate border-t border-border px-3 py-2 font-mono text-xs text-muted-foreground\"\n\t\t\t>\n\t\t\t\t{href}\n\t\t\t</div>\n\t\t</LinkPreviewPrimitive.Content>\n\t</LinkPreviewPrimitive.Portal>\n</LinkPreviewPrimitive.Root>\n",
+			"type": "registry:ui",
+			"target": "link-preview/link-preview.svelte"
+		},
+		{
+			"content": "export { default as LinkPreview } from './link-preview.svelte';\n",
+			"type": "registry:ui",
+			"target": "link-preview/index.ts"
+		}
+	]
+}

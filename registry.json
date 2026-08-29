@@ -1,0 +1,228 @@
+{
+	"$schema": "https://shadcn-svelte.com/schema/registry.json",
+	"name": "codeworks-ui",
+	"homepage": "https://ui.akcodeworks.com",
+	"aliases": {
+		"lib": "$lib",
+		"ui": "$lib/components/ui",
+		"components": "$lib/components",
+		"utils": "$lib/utils",
+		"hooks": "$lib/hooks"
+	},
+	"items": [
+		{
+			"name": "cw",
+			"type": "registry:lib",
+			"title": "Class name utility",
+			"description": "Merges conditional Tailwind CSS classes without conflicts.",
+			"dependencies": ["clsx@^2.1.1", "tailwind-merge@^3.6.0"],
+			"registryDependencies": [],
+			"files": [{ "path": "src/lib/utils/cw.ts", "type": "registry:lib" }]
+		},
+		{
+			"name": "button",
+			"type": "registry:ui",
+			"title": "Button",
+			"description": "Displays a button or a link with a set of accessible visual variants.",
+			"dependencies": ["bits-ui@^2.19.0"],
+			"registryDependencies": ["local:cw"],
+			"files": [
+				{ "path": "src/lib/components/ui/button/button.svelte", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/button/index.ts", "type": "registry:ui" }
+			],
+			"meta": {
+				"docs": {
+					"usage": "Use the href prop to render an anchor, or omit it to render a native button.",
+					"api": [
+						{
+							"name": "variant",
+							"type": "default | destructive | outline | secondary | ghost | link",
+							"default": "default"
+						},
+						{ "name": "size", "type": "default | sm | lg | icon", "default": "default" },
+						{ "name": "href", "type": "string", "default": "—" },
+						{ "name": "disabled", "type": "boolean", "default": "false" }
+					]
+				}
+			}
+		},
+		{
+			"name": "accordion",
+			"type": "registry:ui",
+			"title": "Accordion",
+			"description": "A vertically stacked set of interactive headings that reveal content.",
+			"dependencies": ["bits-ui@^2.19.0"],
+			"registryDependencies": ["local:cw"],
+			"files": [
+				{ "path": "src/lib/components/ui/accordion/accordion.svelte", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/accordion/accordion-item.svelte", "type": "registry:ui" },
+				{
+					"path": "src/lib/components/ui/accordion/accordion-trigger.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/accordion/accordion-content.svelte",
+					"type": "registry:ui"
+				},
+				{ "path": "src/lib/components/ui/accordion/index.ts", "type": "registry:ui" }
+			],
+			"meta": {
+				"docs": {
+					"usage": "Compose Root, Item, Trigger, and Content. Every item needs a stable value.",
+					"api": [
+						{ "name": "type", "type": "single | multiple", "default": "required" },
+						{ "name": "value", "type": "string | string[]", "default": "—" },
+						{ "name": "disabled", "type": "boolean", "default": "false" },
+						{ "name": "orientation", "type": "vertical | horizontal", "default": "vertical" }
+					]
+				}
+			}
+		},
+		{
+			"name": "avatar",
+			"type": "registry:ui",
+			"title": "Avatar",
+			"description": "An image element with a reliable fallback for representing a user or entity.",
+			"dependencies": ["bits-ui@^2.19.0"],
+			"registryDependencies": ["local:cw"],
+			"files": [
+				{ "path": "src/lib/components/ui/avatar/avatar.svelte", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/avatar/avatar-image.svelte", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/avatar/avatar-fallback.svelte", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/avatar/index.ts", "type": "registry:ui" }
+			],
+			"meta": {
+				"docs": {
+					"usage": "Place Image and Fallback inside Root. Always provide descriptive alt text for meaningful images.",
+					"api": [
+						{ "name": "delayMs", "type": "number", "default": "0" },
+						{ "name": "loadingStatus", "type": "loading | loaded | error", "default": "loading" },
+						{ "name": "src", "type": "string", "default": "required" },
+						{ "name": "alt", "type": "string", "default": "required" }
+					]
+				}
+			}
+		},
+		{
+			"name": "code",
+			"type": "registry:ui",
+			"title": "Code",
+			"description": "Syntax-highlighted code display with Svelte support and one-click copying.",
+			"dependencies": ["shiki@^4.4.3"],
+			"registryDependencies": ["local:cw"],
+			"files": [
+				{ "path": "src/lib/components/ui/code/code.svelte", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/code/highlighter.ts", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/code/index.ts", "type": "registry:ui" }
+			],
+			"meta": {
+				"docs": {
+					"usage": "Pass the source text, its language, and an optional filename label. The highlighter is shared across every instance.",
+					"api": [
+						{ "name": "code", "type": "string", "default": "required" },
+						{
+							"name": "language",
+							"type": "svelte | typescript | javascript | json | shellscript | text",
+							"default": "svelte"
+						},
+						{ "name": "label", "type": "string", "default": "language" },
+						{ "name": "showCopy", "type": "boolean", "default": "true" }
+					]
+				}
+			}
+		},
+		{
+			"name": "install",
+			"type": "registry:ui",
+			"title": "Install",
+			"description": "A persistent package-manager switcher for installation commands.",
+			"dependencies": ["bits-ui@^2.19.0"],
+			"registryDependencies": ["local:cw", "local:code"],
+			"files": [
+				{ "path": "src/lib/components/ui/install/install.svelte", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/install/index.ts", "type": "registry:ui" }
+			],
+			"meta": {
+				"docs": {
+					"usage": "Pass package-manager command prefixes through values and the shared package or CLI arguments through script. Install joins them with one space and remembers the active manager.",
+					"api": [
+						{
+							"name": "values",
+							"type": "Array<{ value: string; command: string; label?: string; disabled?: boolean }>",
+							"default": "required"
+						},
+						{ "name": "script", "type": "string", "default": "required" },
+						{
+							"name": "storageKey",
+							"type": "string",
+							"default": "codeworks-ui:package-manager"
+						}
+					]
+				}
+			}
+		},
+		{
+			"name": "holographic",
+			"type": "registry:ui",
+			"title": "Holographic",
+			"description": "Applies an animated holographic spectrum and shimmer over any content.",
+			"dependencies": [],
+			"registryDependencies": ["local:cw"],
+			"files": [
+				{
+					"path": "src/lib/components/ui/holographic/holographic.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/holographic/index.ts",
+					"type": "registry:ui"
+				}
+			],
+			"meta": {
+				"docs": {
+					"usage": "Wrap any content and optionally pass CSS color values. Shape and border radius are controlled through class; no radius is applied by default. Empty color arrays use the built-in spectrum, and reduced-motion preferences are respected.",
+					"api": [
+						{ "name": "colors", "type": "string[]", "default": "built-in spectrum" },
+						{ "name": "intensity", "type": "number (0–1)", "default": "0.16" },
+						{ "name": "duration", "type": "number (milliseconds)", "default": "5000" },
+						{ "name": "class", "type": "string", "default": "—" },
+						{ "name": "children", "type": "Snippet", "default": "required" }
+					]
+				}
+			}
+		},
+		{
+			"name": "link-preview",
+			"type": "registry:ui",
+			"title": "Link Preview",
+			"description": "Lazily displays a linked page in a hover and keyboard-focus preview.",
+			"dependencies": ["bits-ui@^2.19.0"],
+			"registryDependencies": ["local:cw"],
+			"files": [
+				{
+					"path": "src/lib/components/ui/link-preview/link-preview.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/link-preview/index.ts",
+					"type": "registry:ui"
+				}
+			],
+			"meta": {
+				"docs": {
+					"usage": "Pass a URL and optional link content. The iframe is created only after hover or keyboard focus opens the preview. Sites may prevent embedding through their security headers.",
+					"api": [
+						{ "name": "href", "type": "string", "default": "required" },
+						{ "name": "title", "type": "string", "default": "Preview of {href}" },
+						{ "name": "openDelay", "type": "number", "default": "300" },
+						{ "name": "closeDelay", "type": "number", "default": "150" },
+						{ "name": "disabled", "type": "boolean", "default": "false" },
+						{ "name": "class", "type": "string", "default": "—" },
+						{ "name": "contentClass", "type": "string", "default": "—" },
+						{ "name": "iframeClass", "type": "string", "default": "—" }
+					]
+				}
+			}
+		}
+	]
+}
