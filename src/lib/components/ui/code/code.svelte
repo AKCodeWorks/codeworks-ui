@@ -28,7 +28,10 @@
 
 <div
 	data-slot="code"
-	class={cw('overflow-hidden rounded-lg border border-border bg-foreground', className)}
+	class={cw(
+		'overflow-hidden rounded-lg border border-zinc-800 bg-zinc-950 text-zinc-100',
+		className
+	)}
 >
 	<div
 		class="flex h-11 items-center justify-between border-b border-white/10 px-4 text-xs text-white/60"
@@ -44,7 +47,7 @@
 			</button>
 		{/if}
 	</div>
-	<pre class="max-h-[34rem] overflow-auto bg-foreground p-4 font-mono text-[13px] leading-6"><code
+	<pre class="max-h-[34rem] overflow-auto bg-zinc-950 p-4 font-mono text-[13px] leading-6"><code
 			class="grid min-w-max"
 			>{#each lines as line, lineIndex (lineIndex)}<span class="min-h-6"
 					>{#each line as token, tokenIndex (`${tokenIndex}-${token.content}`)}<span

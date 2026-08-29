@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { components } from '$lib/docs/catalog';
-	import { Button } from '$lib/components/ui/button';
 	import { resolve } from '$app/paths';
 </script>
 
@@ -20,9 +19,12 @@
 			A shadcn-compatible Svelte registry of accessible, composable primitives. Install the source,
 			adapt it, and keep it yours.
 		</p>
-		<div class="mt-8 flex gap-3">
-			<Button href="/docs/components/button" size="lg">Browse components</Button>
-			<Button href="/r/button.json" variant="outline" size="lg">View registry JSON</Button>
+		<div class="mt-8">
+			<a
+				href={resolve('/docs/components/[component]', { component: 'aura' })}
+				class="inline-flex h-11 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
+				>Browse components</a
+			>
 		</div>
 	</section>
 	<section class="mx-auto max-w-5xl px-6 pb-24">

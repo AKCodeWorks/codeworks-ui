@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state';
 	import { Tabs } from 'bits-ui';
 	import type { PageData } from './$types';
 	import { Code, languageFromFilename } from '$lib/components/ui/code';
@@ -8,6 +9,8 @@
 	let { data }: { data: PageData } = $props();
 	const component = $derived(getComponent(data.slug)!);
 	const Demo = $derived(component.demo);
+	const registryUrl = $derived(new URL(`/r/${component.name}.json`, page.url.origin).href);
+	const installScript = $derived(`shadcn-svelte@latest add ${registryUrl}`);
 </script>
 
 <svelte:head>
@@ -58,13 +61,69 @@
 			</Tabs.Root>
 		</section>
 
+		{#if component.moreExamples.length}
+			<section class="pt-12" aria-labelledby="more-examples-title">
+				<h2 id="more-examples-title" class="text-2xl font-semibold tracking-tight">
+					More examples
+				</h2>
+				<div class="mt-6 space-y-10">
+					{#each component.moreExamples as example (example.name)}
+						{@const Example = example.demo}
+						<article aria-labelledby={`example-${example.name}`}>
+							<Tabs.Root value="preview">
+								<div class="mb-4 flex items-end justify-between gap-4">
+									<div>
+										<h3 id={`example-${example.name}`} class="text-lg font-semibold">
+											{example.title}
+										</h3>
+										{#if example.description}
+											<p class="mt-1 text-sm text-muted-foreground">{example.description}</p>
+										{/if}
+									</div>
+									<Tabs.List
+										aria-label={`${example.title} example`}
+										class="flex shrink-0 rounded-md border border-border p-1 text-sm text-muted-foreground"
+									>
+										<Tabs.Trigger
+											value="preview"
+											class="rounded px-3 py-1.5 transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none data-[state=active]:bg-muted data-[state=active]:font-medium data-[state=active]:text-foreground"
+											>Preview</Tabs.Trigger
+										>
+										<Tabs.Trigger
+											value="code"
+											class="rounded px-3 py-1.5 transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none data-[state=active]:bg-muted data-[state=active]:font-medium data-[state=active]:text-foreground"
+											>View Code</Tabs.Trigger
+										>
+									</Tabs.List>
+								</div>
+								<Tabs.Content value="preview">
+									<div
+										class="grid min-h-80 place-items-center rounded-xl border border-border bg-card p-8"
+									>
+										<Example />
+									</div>
+								</Tabs.Content>
+								<Tabs.Content value="code">
+									<Code
+										code={example.demoSource}
+										language="svelte"
+										label={`${component.name}-${example.name}.demo.svelte`}
+									/>
+								</Tabs.Content>
+							</Tabs.Root>
+						</article>
+					{/each}
+				</div>
+			</section>
+		{/if}
+
 		<section class="pt-12" aria-labelledby="installation-title">
 			<h2 id="installation-title" class="text-2xl font-semibold tracking-tight">Installation</h2>
 			<p class="mt-3 text-muted-foreground">
 				Install directly from the hosted registry with the shadcn-svelte CLI.
 			</p>
 			<div class="mt-5">
-				<Install values={component.installValues} script={component.installScript} />
+				<Install values={component.installValues} script={installScript} />
 			</div>
 		</section>
 

@@ -14,6 +14,18 @@
 	"meta": {
 		"docs": {
 			"usage": "Pass package-manager command prefixes through values and the shared package or CLI arguments through script. Install joins them with one space and remembers the active manager.",
+			"moreExamples": [
+				{
+					"name": "runners",
+					"title": "CLI runners",
+					"description": "Combine each manager's runner prefix with one shared CLI script."
+				},
+				{
+					"name": "options",
+					"title": "Labels and availability",
+					"description": "Use custom labels, disable unavailable choices, and isolate remembered selections with a storage key."
+				}
+			],
 			"api": [
 				{
 					"name": "values",

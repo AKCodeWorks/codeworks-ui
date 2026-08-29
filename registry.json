@@ -20,85 +20,102 @@
 			"files": [{ "path": "src/lib/utils.ts", "type": "registry:lib" }]
 		},
 		{
-			"name": "button",
+			"name": "aura",
 			"type": "registry:ui",
-			"title": "Button",
-			"description": "Displays a button or a link with a set of accessible visual variants.",
-			"dependencies": ["bits-ui@^2.19.0"],
+			"title": "Aura",
+			"description": "Wraps content in an animated luminous aura with color, material, size, and speed variants.",
+			"dependencies": [],
 			"registryDependencies": ["local:utils"],
 			"files": [
-				{ "path": "src/lib/components/ui/button/button.svelte", "type": "registry:ui" },
-				{ "path": "src/lib/components/ui/button/index.ts", "type": "registry:ui" }
+				{ "path": "src/lib/components/ui/aura/aura.svelte", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/aura/index.ts", "type": "registry:ui" }
 			],
 			"meta": {
 				"docs": {
-					"usage": "Use the href prop to render an anchor, or omit it to render a native button.",
+					"usage": "Wrap a single child with Aura. The child remains directly inside the wrapper, so buttons, inputs, cards, and custom components work without structural changes. Choose a visual variant and size, then use class to match the wrapper radius to your content. Pass color for a single CSS color or colors for a custom multi-color palette. Background colors and animation durations are also customizable, and reduced-motion preferences are respected.",
+					"moreExamples": [
+						{
+							"name": "variants",
+							"title": "Visual variants",
+							"description": "Choose from default, dual, rainbow, holo, glow, gold, and silver treatments."
+						},
+						{
+							"name": "customization",
+							"title": "Sizes and customization",
+							"description": "Control aura thickness, CSS colors, backdrop color, and animation duration."
+						}
+					],
 					"api": [
 						{
 							"name": "variant",
-							"type": "default | destructive | outline | secondary | ghost | link",
+							"type": "default | dual | rainbow | holo | glow | gold | silver",
 							"default": "default"
 						},
-						{ "name": "size", "type": "default | sm | lg | icon", "default": "default" },
-						{ "name": "href", "type": "string", "default": "—" },
-						{ "name": "disabled", "type": "boolean", "default": "false" }
+						{ "name": "size", "type": "xs | sm | md | lg | xl", "default": "md" },
+						{ "name": "color", "type": "CSS color", "default": "currentColor" },
+						{ "name": "colors", "type": "CSS color[]", "default": "[]" },
+						{ "name": "backgroundColor", "type": "CSS color", "default": "transparent" },
+						{ "name": "duration", "type": "number (milliseconds)", "default": "6000" },
+						{ "name": "class", "type": "string", "default": "—" },
+						{ "name": "children", "type": "Snippet", "default": "required" }
 					]
 				}
 			}
 		},
 		{
-			"name": "accordion",
+			"name": "chat",
 			"type": "registry:ui",
-			"title": "Accordion",
-			"description": "A vertically stacked set of interactive headings that reveal content.",
-			"dependencies": ["bits-ui@^2.19.0"],
+			"title": "Chat",
+			"description": "A composable chat interface with aligned messages, message content, and an accessible composer.",
+			"dependencies": [],
 			"registryDependencies": ["local:utils"],
 			"files": [
-				{ "path": "src/lib/components/ui/accordion/accordion.svelte", "type": "registry:ui" },
-				{ "path": "src/lib/components/ui/accordion/accordion-item.svelte", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/chat/chat.svelte", "type": "registry:ui" },
 				{
-					"path": "src/lib/components/ui/accordion/accordion-trigger.svelte",
+					"path": "src/lib/components/ui/chat/chat-messages.svelte",
 					"type": "registry:ui"
 				},
 				{
-					"path": "src/lib/components/ui/accordion/accordion-content.svelte",
+					"path": "src/lib/components/ui/chat/chat-message.svelte",
 					"type": "registry:ui"
 				},
-				{ "path": "src/lib/components/ui/accordion/index.ts", "type": "registry:ui" }
+				{
+					"path": "src/lib/components/ui/chat/chat-content.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/chat/chat-composer.svelte",
+					"type": "registry:ui"
+				},
+				{ "path": "src/lib/components/ui/chat/index.ts", "type": "registry:ui" }
 			],
 			"meta": {
 				"docs": {
-					"usage": "Compose Root, Item, Trigger, and Content. Every item needs a stable value.",
+					"demo": "chat-basic",
+					"usage": "Compose Root, Messages, Message, Content, and Composer. Message defaults to the right side; pass side=\"left\" for incoming messages. Bind Composer's value and handle messages with onSend.",
+					"moreExamples": [
+						{
+							"name": "support",
+							"title": "Avatars and message metadata",
+							"description": "Combine avatars, presence, timestamps, delivery states, and an interactive composer."
+						},
+						{
+							"name": "project",
+							"title": "Custom message content",
+							"description": "Use custom message content for sender names, attachments, dividers, and delivery details."
+						}
+					],
 					"api": [
-						{ "name": "type", "type": "single | multiple", "default": "required" },
-						{ "name": "value", "type": "string | string[]", "default": "—" },
-						{ "name": "disabled", "type": "boolean", "default": "false" },
-						{ "name": "orientation", "type": "vertical | horizontal", "default": "vertical" }
-					]
-				}
-			}
-		},
-		{
-			"name": "avatar",
-			"type": "registry:ui",
-			"title": "Avatar",
-			"description": "An image element with a reliable fallback for representing a user or entity.",
-			"dependencies": ["bits-ui@^2.19.0"],
-			"registryDependencies": ["local:utils"],
-			"files": [
-				{ "path": "src/lib/components/ui/avatar/avatar.svelte", "type": "registry:ui" },
-				{ "path": "src/lib/components/ui/avatar/avatar-image.svelte", "type": "registry:ui" },
-				{ "path": "src/lib/components/ui/avatar/avatar-fallback.svelte", "type": "registry:ui" },
-				{ "path": "src/lib/components/ui/avatar/index.ts", "type": "registry:ui" }
-			],
-			"meta": {
-				"docs": {
-					"usage": "Place Image and Fallback inside Root. Always provide descriptive alt text for meaningful images.",
-					"api": [
-						{ "name": "delayMs", "type": "number", "default": "0" },
-						{ "name": "loadingStatus", "type": "loading | loaded | error", "default": "loading" },
-						{ "name": "src", "type": "string", "default": "required" },
-						{ "name": "alt", "type": "string", "default": "required" }
+						{ "name": "Message.side", "type": "left | right", "default": "right" },
+						{ "name": "Composer.value", "type": "string", "default": "''" },
+						{
+							"name": "Composer.onSend",
+							"type": "(message: string) => void | Promise<void>",
+							"default": "—"
+						},
+						{ "name": "Composer.clearOnSend", "type": "boolean", "default": "true" },
+						{ "name": "Composer.submitOnEnter", "type": "boolean", "default": "true" },
+						{ "name": "Composer.disabled", "type": "boolean", "default": "false" }
 					]
 				}
 			}
@@ -118,6 +135,18 @@
 			"meta": {
 				"docs": {
 					"usage": "Pass the source text, its language, and an optional filename label. The highlighter is shared across every instance.",
+					"moreExamples": [
+						{
+							"name": "languages",
+							"title": "Languages",
+							"description": "Highlight TypeScript, JSON, and shell commands with language-aware labels."
+						},
+						{
+							"name": "presentation",
+							"title": "Presentation controls",
+							"description": "Hide the copy action, customize the label, and control the code block dimensions with Tailwind classes."
+						}
+					],
 					"api": [
 						{ "name": "code", "type": "string", "default": "required" },
 						{
@@ -145,6 +174,18 @@
 			"meta": {
 				"docs": {
 					"usage": "Pass package-manager command prefixes through values and the shared package or CLI arguments through script. Install joins them with one space and remembers the active manager.",
+					"moreExamples": [
+						{
+							"name": "runners",
+							"title": "CLI runners",
+							"description": "Combine each manager's runner prefix with one shared CLI script."
+						},
+						{
+							"name": "options",
+							"title": "Labels and availability",
+							"description": "Use custom labels, disable unavailable choices, and isolate remembered selections with a storage key."
+						}
+					],
 					"api": [
 						{
 							"name": "values",
@@ -181,6 +222,18 @@
 			"meta": {
 				"docs": {
 					"usage": "Wrap any content and optionally pass CSS color values. Shape and border radius are controlled through class; no radius is applied by default. Empty color arrays use the built-in spectrum, and reduced-motion preferences are respected.",
+					"moreExamples": [
+						{
+							"name": "intensity",
+							"title": "Intensity and speed",
+							"description": "Tune the shimmer from barely-there polish to a stronger accent and control its duration."
+						},
+						{
+							"name": "content",
+							"title": "Any shape or content",
+							"description": "Apply the effect to interactive controls and cards while owning the shape entirely through Tailwind classes."
+						}
+					],
 					"api": [
 						{ "name": "colors", "type": "string[]", "default": "built-in spectrum" },
 						{ "name": "intensity", "type": "number (0–1)", "default": "0.16" },
@@ -192,34 +245,141 @@
 			}
 		},
 		{
-			"name": "link-preview",
+			"name": "stat",
 			"type": "registry:ui",
-			"title": "Link Preview",
-			"description": "Lazily displays a linked page in a hover and keyboard-focus preview.",
-			"dependencies": ["bits-ui@^2.19.0"],
+			"title": "Stat",
+			"description": "Displays related numbers and supporting data in composable horizontal, vertical, or responsive blocks.",
+			"dependencies": [],
 			"registryDependencies": ["local:utils"],
 			"files": [
-				{
-					"path": "src/lib/components/ui/link-preview/link-preview.svelte",
-					"type": "registry:ui"
-				},
-				{
-					"path": "src/lib/components/ui/link-preview/index.ts",
-					"type": "registry:ui"
-				}
+				{ "path": "src/lib/components/ui/stat/stat.svelte", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/stat/stat-item.svelte", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/stat/stat-title.svelte", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/stat/stat-value.svelte", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/stat/stat-description.svelte", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/stat/stat-figure.svelte", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/stat/stat-actions.svelte", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/stat/index.ts", "type": "registry:ui" }
 			],
 			"meta": {
 				"docs": {
-					"usage": "Pass a URL and optional link content. The iframe is created only after hover or keyboard focus opens the preview. Sites may prevent embedding through their security headers.",
+					"usage": "Compose Root, Item, Title, Value, and Description. Add Figure for an icon or image and Actions for controls. Root defaults to a horizontal layout; use vertical or responsive when the stats should stack, including on smaller screens.",
+					"moreExamples": [
+						{
+							"name": "dashboard",
+							"title": "Responsive dashboard",
+							"description": "Combine figures, semantic colors, and multiple values in a layout that stacks on smaller screens."
+						},
+						{
+							"name": "actions",
+							"title": "Actions and alignment",
+							"description": "Add controls or center individual stat items with ordinary Tailwind classes."
+						}
+					],
 					"api": [
-						{ "name": "href", "type": "string", "default": "required" },
-						{ "name": "title", "type": "string", "default": "Preview of {href}" },
-						{ "name": "openDelay", "type": "number", "default": "300" },
-						{ "name": "closeDelay", "type": "number", "default": "150" },
+						{
+							"name": "Root.direction",
+							"type": "horizontal | vertical | responsive",
+							"default": "horizontal"
+						},
+						{ "name": "class", "type": "string", "default": "—" },
+						{ "name": "children", "type": "Snippet", "default": "required" }
+					]
+				}
+			}
+		},
+		{
+			"name": "steps",
+			"type": "registry:ui",
+			"title": "Steps",
+			"description": "Shows progress through a sequence with composable steps, states, colors, and responsive orientations.",
+			"dependencies": [],
+			"registryDependencies": ["local:utils"],
+			"files": [
+				{ "path": "src/lib/components/ui/steps/steps.svelte", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/steps/steps-item.svelte", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/steps/steps-context.ts", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/steps/index.ts", "type": "registry:ui" }
+			],
+			"meta": {
+				"docs": {
+					"usage": "Compose Root and Item. Root controls horizontal, vertical, or responsive layout. Each Item accepts a pending, current, or complete state and an optional semantic color variant. Pass indicator as text, a number, or a snippet for icons and custom markup. The underlying ordered list preserves the process order for assistive technology.",
+					"moreExamples": [
+						{
+							"name": "directions",
+							"title": "Vertical and responsive",
+							"description": "Use a vertical sequence or switch automatically from vertical on mobile to horizontal on larger screens."
+						},
+						{
+							"name": "variants",
+							"title": "Colors and custom indicators",
+							"description": "Communicate success, warnings, and errors with semantic variants and snippet-based indicator content."
+						}
+					],
+					"api": [
+						{
+							"name": "Root.direction",
+							"type": "horizontal | vertical | responsive",
+							"default": "horizontal"
+						},
+						{
+							"name": "Item.state",
+							"type": "pending | current | complete",
+							"default": "pending"
+						},
+						{
+							"name": "Item.variant",
+							"type": "primary | secondary | accent | neutral | info | success | warning | destructive",
+							"default": "primary"
+						},
+						{ "name": "Item.indicator", "type": "string | number | Snippet", "default": "—" },
+						{ "name": "class", "type": "string", "default": "—" },
+						{ "name": "Item.indicatorClass", "type": "string", "default": "—" },
+						{ "name": "Item.labelClass", "type": "string", "default": "—" },
+						{ "name": "children", "type": "Snippet", "default": "required" }
+					]
+				}
+			}
+		},
+		{
+			"name": "tooltip",
+			"type": "registry:ui",
+			"title": "Tooltip",
+			"description": "Displays concise contextual information on hover, keyboard focus, or touch-friendly tap.",
+			"dependencies": ["bits-ui@^2.19.0"],
+			"registryDependencies": ["local:utils"],
+			"files": [
+				{ "path": "src/lib/components/ui/tooltip/tooltip.svelte", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/tooltip/index.ts", "type": "registry:ui" }
+			],
+			"meta": {
+				"docs": {
+					"usage": "Wrap a single control or element and pass content as text or a snippet. The tooltip opens on pointer hover and keyboard focus, toggles on touch tap, closes on outside interaction or Escape, avoids viewport edges, and keeps a mobile-safe maximum width. Keep tooltip content concise and non-interactive; use a popover for buttons or form controls.",
+					"moreExamples": [
+						{
+							"name": "placements",
+							"title": "Placement",
+							"description": "Position the tooltip on any side while collision handling keeps it inside the viewport."
+						},
+						{
+							"name": "content",
+							"title": "Rich content",
+							"description": "Use a snippet for concise formatted content while preserving tooltip semantics."
+						}
+					],
+					"api": [
+						{ "name": "content", "type": "string | Snippet", "default": "required" },
+						{ "name": "open", "type": "boolean", "default": "false" },
+						{ "name": "side", "type": "top | right | bottom | left", "default": "top" },
+						{ "name": "align", "type": "start | center | end", "default": "center" },
+						{ "name": "sideOffset", "type": "number", "default": "8" },
+						{ "name": "delayDuration", "type": "number", "default": "300" },
+						{ "name": "tapToOpen", "type": "boolean", "default": "true" },
+						{ "name": "showArrow", "type": "boolean", "default": "true" },
 						{ "name": "disabled", "type": "boolean", "default": "false" },
 						{ "name": "class", "type": "string", "default": "—" },
 						{ "name": "contentClass", "type": "string", "default": "—" },
-						{ "name": "iframeClass", "type": "string", "default": "—" }
+						{ "name": "children", "type": "Snippet", "default": "required" }
 					]
 				}
 			}

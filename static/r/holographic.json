@@ -10,6 +10,18 @@
 	"meta": {
 		"docs": {
 			"usage": "Wrap any content and optionally pass CSS color values. Shape and border radius are controlled through class; no radius is applied by default. Empty color arrays use the built-in spectrum, and reduced-motion preferences are respected.",
+			"moreExamples": [
+				{
+					"name": "intensity",
+					"title": "Intensity and speed",
+					"description": "Tune the shimmer from barely-there polish to a stronger accent and control its duration."
+				},
+				{
+					"name": "content",
+					"title": "Any shape or content",
+					"description": "Apply the effect to interactive controls and cards while owning the shape entirely through Tailwind classes."
+				}
+			],
 			"api": [
 				{
 					"name": "colors",

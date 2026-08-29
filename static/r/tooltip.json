@@ -1,0 +1,104 @@
+{
+	"$schema": "https://shadcn-svelte.com/schema/registry-item.json",
+	"name": "tooltip",
+	"title": "Tooltip",
+	"type": "registry:ui",
+	"description": "Displays concise contextual information on hover, keyboard focus, or touch-friendly tap.",
+	"dependencies": [
+		"bits-ui@^2.19.0"
+	],
+	"registryDependencies": [
+		"./utils.json"
+	],
+	"meta": {
+		"docs": {
+			"usage": "Wrap a single control or element and pass content as text or a snippet. The tooltip opens on pointer hover and keyboard focus, toggles on touch tap, closes on outside interaction or Escape, avoids viewport edges, and keeps a mobile-safe maximum width. Keep tooltip content concise and non-interactive; use a popover for buttons or form controls.",
+			"moreExamples": [
+				{
+					"name": "placements",
+					"title": "Placement",
+					"description": "Position the tooltip on any side while collision handling keeps it inside the viewport."
+				},
+				{
+					"name": "content",
+					"title": "Rich content",
+					"description": "Use a snippet for concise formatted content while preserving tooltip semantics."
+				}
+			],
+			"api": [
+				{
+					"name": "content",
+					"type": "string | Snippet",
+					"default": "required"
+				},
+				{
+					"name": "open",
+					"type": "boolean",
+					"default": "false"
+				},
+				{
+					"name": "side",
+					"type": "top | right | bottom | left",
+					"default": "top"
+				},
+				{
+					"name": "align",
+					"type": "start | center | end",
+					"default": "center"
+				},
+				{
+					"name": "sideOffset",
+					"type": "number",
+					"default": "8"
+				},
+				{
+					"name": "delayDuration",
+					"type": "number",
+					"default": "300"
+				},
+				{
+					"name": "tapToOpen",
+					"type": "boolean",
+					"default": "true"
+				},
+				{
+					"name": "showArrow",
+					"type": "boolean",
+					"default": "true"
+				},
+				{
+					"name": "disabled",
+					"type": "boolean",
+					"default": "false"
+				},
+				{
+					"name": "class",
+					"type": "string",
+					"default": "—"
+				},
+				{
+					"name": "contentClass",
+					"type": "string",
+					"default": "—"
+				},
+				{
+					"name": "children",
+					"type": "Snippet",
+					"default": "required"
+				}
+			]
+		}
+	},
+	"files": [
+		{
+			"content": "<script lang=\"ts\" module>\n\texport type TooltipSide = 'top' | 'right' | 'bottom' | 'left';\n\texport type TooltipAlign = 'start' | 'center' | 'end';\n</script>\n\n<script lang=\"ts\">\n\timport type { Snippet } from 'svelte';\n\timport { Tooltip as TooltipPrimitive } from 'bits-ui';\n\timport { cw } from '$UTILS$';\n\n\ttype TooltipProps = {\n\t\tchildren: Snippet;\n\t\tcontent: string | Snippet;\n\t\topen?: boolean;\n\t\tonOpenChange?: (open: boolean) => void;\n\t\tside?: TooltipSide;\n\t\talign?: TooltipAlign;\n\t\tsideOffset?: number;\n\t\tdelayDuration?: number;\n\t\tdisabled?: boolean;\n\t\ttapToOpen?: boolean;\n\t\tshowArrow?: boolean;\n\t\tclass?: string;\n\t\tcontentClass?: string;\n\t};\n\n\tlet {\n\t\tchildren,\n\t\tcontent,\n\t\topen = $bindable(false),\n\t\tonOpenChange,\n\t\tside = 'top',\n\t\talign = 'center',\n\t\tsideOffset = 8,\n\t\tdelayDuration = 300,\n\t\tdisabled = false,\n\t\ttapToOpen = true,\n\t\tshowArrow = true,\n\t\tclass: className,\n\t\tcontentClass\n\t}: TooltipProps = $props();\n\n\tfunction handleOpenChange(nextOpen: boolean) {\n\t\topen = nextOpen;\n\t\tonOpenChange?.(nextOpen);\n\t}\n\n\tfunction handlePointerDown(event: PointerEvent) {\n\t\tif (!tapToOpen || disabled || event.pointerType === 'mouse') return;\n\t\topen = !open;\n\t\tonOpenChange?.(open);\n\t}\n</script>\n\n<TooltipPrimitive.Provider {delayDuration} {disabled} disableCloseOnTriggerClick={tapToOpen}>\n\t<TooltipPrimitive.Root\n\t\tbind:open\n\t\t{delayDuration}\n\t\t{disabled}\n\t\tdisableCloseOnTriggerClick={tapToOpen}\n\t\tonOpenChange={handleOpenChange}\n\t>\n\t\t<TooltipPrimitive.Trigger>\n\t\t\t{#snippet child({ props })}\n\t\t\t\t<span\n\t\t\t\t\t{...props}\n\t\t\t\t\tonpointerdown={handlePointerDown}\n\t\t\t\t\tclass={cw(\n\t\t\t\t\t\t'inline-flex max-w-full touch-manipulation rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none',\n\t\t\t\t\t\tclassName\n\t\t\t\t\t)}\n\t\t\t\t>\n\t\t\t\t\t{@render children()}\n\t\t\t\t</span>\n\t\t\t{/snippet}\n\t\t</TooltipPrimitive.Trigger>\n\n\t\t<TooltipPrimitive.Portal>\n\t\t\t<TooltipPrimitive.Content\n\t\t\t\t{side}\n\t\t\t\t{align}\n\t\t\t\t{sideOffset}\n\t\t\t\tcollisionPadding={12}\n\t\t\t\tsticky=\"always\"\n\t\t\t\tclass={cw(\n\t\t\t\t\t'z-50 max-w-[min(20rem,calc(100vw-2rem))] rounded-md bg-foreground px-3 py-1.5 text-xs leading-relaxed text-background shadow-md outline-none',\n\t\t\t\t\tcontentClass\n\t\t\t\t)}\n\t\t\t>\n\t\t\t\t{#if typeof content === 'string'}\n\t\t\t\t\t{content}\n\t\t\t\t{:else}\n\t\t\t\t\t{@render content()}\n\t\t\t\t{/if}\n\t\t\t\t{#if showArrow}\n\t\t\t\t\t<TooltipPrimitive.Arrow class=\"fill-foreground\" />\n\t\t\t\t{/if}\n\t\t\t</TooltipPrimitive.Content>\n\t\t</TooltipPrimitive.Portal>\n\t</TooltipPrimitive.Root>\n</TooltipPrimitive.Provider>\n",
+			"type": "registry:ui",
+			"target": "tooltip/tooltip.svelte"
+		},
+		{
+			"content": "export { default as Tooltip } from './tooltip.svelte';\nexport type { TooltipAlign, TooltipSide } from './tooltip.svelte';\n",
+			"type": "registry:ui",
+			"target": "tooltip/index.ts"
+		}
+	]
+}
