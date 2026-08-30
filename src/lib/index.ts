@@ -5,6 +5,17 @@ export type { ChatSide } from './components/ui/chat';
 export { Code, languageFromFilename } from './components/ui/code';
 export type { CodeLanguage } from './components/ui/code';
 export * as ContextMenu from './components/ui/context-menu';
+export { Error, errorTitle } from './components/ui/error';
+export type { ErrorProps } from './components/ui/error';
+export { FileDropzone, formatFileSize } from './components/ui/file-dropzone';
+export type {
+	FileDropzoneItem,
+	FileRejection,
+	FileRejectionReason,
+	FileUploadContext,
+	FileUploader,
+	FileUploadStatus
+} from './components/ui/file-dropzone';
 export { Install } from './components/ui/install';
 export type { InstallValue } from './components/ui/install';
 export { Holographic } from './components/ui/holographic';
@@ -23,6 +34,13 @@ export type {
 	NavbarMobileSide,
 	NavbarSubroute
 } from './components/ui/navbar';
+export {
+	E164_PHONE_PATTERN,
+	PHONE_COUNTRIES,
+	PhoneInput,
+	isE164PhoneNumber
+} from './components/ui/phone-input';
+export type { PhoneCountry } from './components/ui/phone-input';
 export * as Stat from './components/ui/stat';
 export type { StatDirection } from './components/ui/stat';
 export * as Steps from './components/ui/steps';

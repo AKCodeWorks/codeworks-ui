@@ -87,6 +87,7 @@
 
 	const desktopClass = $derived(forceMobile ? 'hidden' : desktopVisibility[breakpoint]);
 	const mobileClass = $derived(forceMobile ? 'block' : mobileVisibility[breakpoint]);
+	let mobileContent = $state<HTMLDivElement | null>(null);
 
 	function handleOpenChange(nextOpen: boolean) {
 		open = nextOpen;
@@ -95,6 +96,11 @@
 
 	function closeMobileMenu() {
 		handleOpenChange(false);
+	}
+
+	function handleMobileOpenAutoFocus(event: Event) {
+		event.preventDefault();
+		requestAnimationFrame(() => mobileContent?.focus({ preventScroll: true }));
 	}
 </script>
 
@@ -276,7 +282,13 @@
 					</svg>
 				</Sheet.Trigger>
 
-				<Sheet.Content side={mobileSide} class={cn('w-[min(22rem,85vw)] gap-0 p-0', contentClass)}>
+				<Sheet.Content
+					bind:ref={mobileContent}
+					side={mobileSide}
+					tabindex={-1}
+					onOpenAutoFocus={handleMobileOpenAutoFocus}
+					class={cn('w-[min(22rem,85vw)] gap-0 p-0', contentClass)}
+				>
 					<Sheet.Header class="border-b border-border px-6 py-5 text-left">
 						<Sheet.Title>{mobileTitle}</Sheet.Title>
 						<Sheet.Description>{mobileDescription}</Sheet.Description>

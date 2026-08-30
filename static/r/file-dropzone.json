@@ -1,0 +1,154 @@
+{
+	"$schema": "https://shadcn-svelte.com/schema/registry-item.json",
+	"name": "file-dropzone",
+	"title": "File Dropzone",
+	"type": "registry:ui",
+	"description": "A drag-and-drop file manager with renaming, removal, validation, native form support, and callback-driven upload progress.",
+	"dependencies": [
+		"@lucide/svelte@^1.37.0"
+	],
+	"devDependencies": [
+		"@lucide/svelte@^1.37.0"
+	],
+	"registryDependencies": [
+		"button",
+		"input",
+		"utils"
+	],
+	"meta": {
+		"docs": {
+			"usage": "Bind files for application state or provide name to submit the synchronized FileList through a native form. Users can add files by dropping or browsing, inspect file sizes, rename files, and remove individual entries. Pass onUpload to connect any upload helper; call context.onProgress with a value from 0 to 100 and observe context.signal to support cancellation. Uploads can start from each row, through Upload all, or automatically with autoUpload. Use accept, maxFiles, and maxFileSize to reject unsupported selections before upload.",
+			"moreExamples": [
+				{
+					"name": "upload",
+					"title": "Callback uploads",
+					"description": "Connect an asynchronous upload helper and report progress for every file."
+				},
+				{
+					"name": "restrictions",
+					"title": "File restrictions",
+					"description": "Limit file types, count, and size while receiving structured rejection details."
+				}
+			],
+			"api": [
+				{
+					"name": "files",
+					"type": "File[] (bindable)",
+					"default": "[]"
+				},
+				{
+					"name": "onFilesChange",
+					"type": "(files: File[]) => void",
+					"default": "—"
+				},
+				{
+					"name": "onUpload",
+					"type": "(file: File, context: FileUploadContext) => Promise<void>",
+					"default": "—"
+				},
+				{
+					"name": "FileUploadContext.onProgress",
+					"type": "(progress: number) => void",
+					"default": "—"
+				},
+				{
+					"name": "FileUploadContext.signal",
+					"type": "AbortSignal",
+					"default": "—"
+				},
+				{
+					"name": "onUploadComplete",
+					"type": "(file: File) => void",
+					"default": "—"
+				},
+				{
+					"name": "onUploadError",
+					"type": "(file: File, error: Error) => void",
+					"default": "—"
+				},
+				{
+					"name": "onReject",
+					"type": "(rejections: FileRejection[]) => void",
+					"default": "—"
+				},
+				{
+					"name": "autoUpload",
+					"type": "boolean",
+					"default": "false"
+				},
+				{
+					"name": "name",
+					"type": "string",
+					"default": "—"
+				},
+				{
+					"name": "accept",
+					"type": "string",
+					"default": "—"
+				},
+				{
+					"name": "multiple",
+					"type": "boolean",
+					"default": "true"
+				},
+				{
+					"name": "maxFiles",
+					"type": "number",
+					"default": "Infinity"
+				},
+				{
+					"name": "maxFileSize",
+					"type": "number (bytes)",
+					"default": "—"
+				},
+				{
+					"name": "disabled",
+					"type": "boolean",
+					"default": "false"
+				},
+				{
+					"name": "dropLabel",
+					"type": "string",
+					"default": "Drop files here"
+				},
+				{
+					"name": "browseLabel",
+					"type": "string",
+					"default": "or choose files"
+				},
+				{
+					"name": "class",
+					"type": "string",
+					"default": "—"
+				},
+				{
+					"name": "dropzoneClass",
+					"type": "string",
+					"default": "—"
+				},
+				{
+					"name": "listClass",
+					"type": "string",
+					"default": "—"
+				},
+				{
+					"name": "inputProps",
+					"type": "HTML input props",
+					"default": "—"
+				}
+			]
+		}
+	},
+	"files": [
+		{
+			"content": "<script module lang=\"ts\">\n\texport type FileUploadStatus = 'idle' | 'uploading' | 'complete' | 'error' | 'cancelled';\n\n\texport type FileDropzoneItem = {\n\t\tid: string;\n\t\tfile: File;\n\t\tprogress: number;\n\t\tstatus: FileUploadStatus;\n\t\terror?: string;\n\t};\n\n\texport type FileRejectionReason = 'type' | 'size' | 'count' | 'duplicate';\n\n\texport type FileRejection = {\n\t\tfile: File;\n\t\treason: FileRejectionReason;\n\t\tmessage: string;\n\t};\n\n\texport type FileUploadContext = {\n\t\tonProgress: (progress: number) => void;\n\t\tsignal: AbortSignal;\n\t};\n\n\texport type FileUploader = (file: File, context: FileUploadContext) => Promise<void>;\n\n\texport function formatFileSize(bytes: number) {\n\t\tif (bytes === 0) return '0 B';\n\t\tconst units = ['B', 'KB', 'MB', 'GB', 'TB'];\n\t\tconst index = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);\n\t\tconst value = bytes / 1024 ** index;\n\t\treturn `${value >= 10 || index === 0 ? value.toFixed(0) : value.toFixed(1)} ${units[index]}`;\n\t}\n</script>\n\n<script lang=\"ts\">\n\timport CheckIcon from '@lucide/svelte/icons/check';\n\timport FileIcon from '@lucide/svelte/icons/file';\n\timport LoaderCircleIcon from '@lucide/svelte/icons/loader-circle';\n\timport PencilIcon from '@lucide/svelte/icons/pencil';\n\timport RotateCcwIcon from '@lucide/svelte/icons/rotate-ccw';\n\timport UploadIcon from '@lucide/svelte/icons/upload';\n\timport XIcon from '@lucide/svelte/icons/x';\n\timport { onMount } from 'svelte';\n\timport type { HTMLInputAttributes } from 'svelte/elements';\n\timport { SvelteMap, SvelteSet } from 'svelte/reactivity';\n\timport { Button } from '$COMPONENTS$/ui/button';\n\timport { Input } from '$COMPONENTS$/ui/input';\n\timport { cn } from '$UTILS$.js';\n\n\ttype FileDropzoneProps = {\n\t\tfiles?: File[];\n\t\tonFilesChange?: (files: File[]) => void;\n\t\tonUpload?: FileUploader;\n\t\tonUploadComplete?: (file: File) => void;\n\t\tonUploadError?: (file: File, error: Error) => void;\n\t\tonReject?: (rejections: FileRejection[]) => void;\n\t\tautoUpload?: boolean;\n\t\tname?: string;\n\t\taccept?: string;\n\t\tmultiple?: boolean;\n\t\tmaxFiles?: number;\n\t\tmaxFileSize?: number;\n\t\tdisabled?: boolean;\n\t\tdropLabel?: string;\n\t\tbrowseLabel?: string;\n\t\tclass?: string;\n\t\tdropzoneClass?: string;\n\t\tlistClass?: string;\n\t\tinputProps?: Omit<\n\t\t\tHTMLInputAttributes,\n\t\t\t'type' | 'files' | 'value' | 'name' | 'accept' | 'multiple' | 'disabled' | 'oninput' | 'class'\n\t\t>;\n\t};\n\n\tlet {\n\t\tfiles = $bindable([]),\n\t\tonFilesChange,\n\t\tonUpload,\n\t\tonUploadComplete,\n\t\tonUploadError,\n\t\tonReject,\n\t\tautoUpload = false,\n\t\tname,\n\t\taccept,\n\t\tmultiple = true,\n\t\tmaxFiles = Number.POSITIVE_INFINITY,\n\t\tmaxFileSize,\n\t\tdisabled = false,\n\t\tdropLabel = 'Drop files here',\n\t\tbrowseLabel = 'or choose files',\n\t\tclass: className,\n\t\tdropzoneClass,\n\t\tlistClass,\n\t\tinputProps\n\t}: FileDropzoneProps = $props();\n\n\tconst componentId = $props.id();\n\tconst inputId = `${componentId}-input`;\n\tconst rejectionId = `${componentId}-rejection`;\n\tlet itemCounter = 0;\n\tlet fileInput = $state<HTMLInputElement | null>(null);\n\tlet dragging = $state(false);\n\tlet rejectionMessage = $state('');\n\tlet editingId = $state<string | null>(null);\n\tlet renameValue = $state('');\n\tlet items = $state<FileDropzoneItem[]>(files.map(createItem));\n\tconst controllers = new SvelteMap<string, AbortController>();\n\tconst uploading = $derived(items.some((item) => item.status === 'uploading'));\n\tconst canUpload = $derived(\n\t\tBoolean(onUpload) && items.some((item) => ['idle', 'error', 'cancelled'].includes(item.status))\n\t);\n\n\tonMount(() => syncNativeInput(files));\n\n\tfunction createItem(file: File): FileDropzoneItem {\n\t\treturn {\n\t\t\tid: `${componentId}-file-${itemCounter++}`,\n\t\t\tfile,\n\t\t\tprogress: 0,\n\t\t\tstatus: 'idle'\n\t\t};\n\t}\n\n\tfunction syncNativeInput(nextFiles: File[]) {\n\t\tif (!fileInput || typeof DataTransfer === 'undefined') return;\n\n\t\tconst transfer = new DataTransfer();\n\t\tfor (const file of nextFiles) transfer.items.add(file);\n\t\tfileInput.files = transfer.files;\n\t}\n\n\tfunction commit(nextItems: FileDropzoneItem[]) {\n\t\titems = nextItems;\n\t\tfiles = nextItems.map((item) => item.file);\n\t\tsyncNativeInput(files);\n\t\tonFilesChange?.(files);\n\t}\n\n\tfunction matchesAccept(file: File) {\n\t\tif (!accept) return true;\n\n\t\treturn accept.split(',').some((rule) => {\n\t\t\tconst value = rule.trim().toLowerCase();\n\t\t\tif (!value) return false;\n\t\t\tif (value.startsWith('.')) return file.name.toLowerCase().endsWith(value);\n\t\t\tif (value.endsWith('/*')) return file.type.toLowerCase().startsWith(value.slice(0, -1));\n\t\t\treturn file.type.toLowerCase() === value;\n\t\t});\n\t}\n\n\tfunction rejectionFor(file: File, reason: FileRejectionReason): FileRejection {\n\t\tconst messages: Record<FileRejectionReason, string> = {\n\t\t\ttype: `${file.name} is not an accepted file type.`,\n\t\t\tsize: `${file.name} is larger than ${formatFileSize(maxFileSize ?? 0)}.`,\n\t\t\tcount: `Only ${maxFiles} file${maxFiles === 1 ? '' : 's'} can be added.`,\n\t\t\tduplicate: `${file.name} has already been added.`\n\t\t};\n\t\treturn { file, reason, message: messages[reason] };\n\t}\n\n\tfunction addFiles(incoming: File[]) {\n\t\tif (disabled || incoming.length === 0) return;\n\n\t\tconst acceptedItems: FileDropzoneItem[] = [];\n\t\tconst rejections: FileRejection[] = [];\n\t\tconst existing = new SvelteSet(\n\t\t\titems.map(({ file }) => `${file.name}:${file.size}:${file.lastModified}`)\n\t\t);\n\t\tconst limit = multiple ? maxFiles : 1;\n\n\t\tfor (const file of incoming) {\n\t\t\tconst signature = `${file.name}:${file.size}:${file.lastModified}`;\n\t\t\tif (existing.has(signature)) {\n\t\t\t\trejections.push(rejectionFor(file, 'duplicate'));\n\t\t\t} else if (!matchesAccept(file)) {\n\t\t\t\trejections.push(rejectionFor(file, 'type'));\n\t\t\t} else if (maxFileSize !== undefined && file.size > maxFileSize) {\n\t\t\t\trejections.push(rejectionFor(file, 'size'));\n\t\t\t} else if ((multiple ? items.length : 0) + acceptedItems.length >= limit) {\n\t\t\t\trejections.push(rejectionFor(file, 'count'));\n\t\t\t} else {\n\t\t\t\tconst item = createItem(file);\n\t\t\t\tacceptedItems.push(item);\n\t\t\t\texisting.add(signature);\n\t\t\t}\n\t\t}\n\n\t\tconst baseItems = multiple ? items : [];\n\t\tcommit([...baseItems, ...acceptedItems]);\n\t\trejectionMessage = rejections[0]?.message ?? '';\n\t\tif (rejections.length) onReject?.(rejections);\n\n\t\tif (autoUpload && onUpload) {\n\t\t\tfor (const item of acceptedItems) void uploadItem(item.id);\n\t\t}\n\t}\n\n\tfunction handleSelection(event: Event) {\n\t\tconst input = event.currentTarget as HTMLInputElement;\n\t\taddFiles(Array.from(input.files ?? []));\n\t}\n\n\tfunction handleDrop(event: DragEvent) {\n\t\tevent.preventDefault();\n\t\tdragging = false;\n\t\taddFiles(Array.from(event.dataTransfer?.files ?? []));\n\t}\n\n\tfunction updateItem(id: string, update: Partial<FileDropzoneItem>) {\n\t\titems = items.map((item) => (item.id === id ? { ...item, ...update } : item));\n\t}\n\n\tfunction removeItem(id: string) {\n\t\tcontrollers.get(id)?.abort();\n\t\tcontrollers.delete(id);\n\t\tif (editingId === id) editingId = null;\n\t\tcommit(items.filter((item) => item.id !== id));\n\t}\n\n\tfunction clearFiles() {\n\t\tfor (const controller of controllers.values()) controller.abort();\n\t\tcontrollers.clear();\n\t\teditingId = null;\n\t\trejectionMessage = '';\n\t\tcommit([]);\n\t}\n\n\tfunction beginRename(item: FileDropzoneItem) {\n\t\teditingId = item.id;\n\t\trenameValue = item.file.name;\n\t}\n\n\tfunction saveRename(event: SubmitEvent, item: FileDropzoneItem) {\n\t\tevent.preventDefault();\n\t\tconst nextName = renameValue.trim();\n\t\tif (!nextName || nextName === item.file.name) {\n\t\t\teditingId = null;\n\t\t\treturn;\n\t\t}\n\n\t\tconst renamedFile = new File([item.file], nextName, {\n\t\t\ttype: item.file.type,\n\t\t\tlastModified: item.file.lastModified\n\t\t});\n\t\tcommit(\n\t\t\titems.map((entry) =>\n\t\t\t\tentry.id === item.id\n\t\t\t\t\t? { ...entry, file: renamedFile, progress: 0, status: 'idle', error: undefined }\n\t\t\t\t\t: entry\n\t\t\t)\n\t\t);\n\t\teditingId = null;\n\t}\n\n\tasync function uploadItem(id: string) {\n\t\tconst item = items.find((entry) => entry.id === id);\n\t\tif (!item || !onUpload || item.status === 'uploading') return;\n\n\t\tconst controller = new AbortController();\n\t\tcontrollers.set(id, controller);\n\t\tupdateItem(id, { progress: 0, status: 'uploading', error: undefined });\n\n\t\ttry {\n\t\t\tawait onUpload(item.file, {\n\t\t\t\tsignal: controller.signal,\n\t\t\t\tonProgress: (progress) => {\n\t\t\t\t\tupdateItem(id, { progress: Math.min(100, Math.max(0, progress)) });\n\t\t\t\t}\n\t\t\t});\n\n\t\t\tif (controller.signal.aborted) {\n\t\t\t\tupdateItem(id, { status: 'cancelled' });\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tupdateItem(id, { progress: 100, status: 'complete' });\n\t\t\tonUploadComplete?.(item.file);\n\t\t} catch (cause) {\n\t\t\tif (controller.signal.aborted) {\n\t\t\t\tupdateItem(id, { status: 'cancelled' });\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst uploadError = cause instanceof Error ? cause : new Error('Upload failed.');\n\t\t\tupdateItem(id, { status: 'error', error: uploadError.message });\n\t\t\tonUploadError?.(item.file, uploadError);\n\t\t} finally {\n\t\t\tcontrollers.delete(id);\n\t\t}\n\t}\n\n\tasync function uploadAll() {\n\t\tconst uploadable = items.filter((item) => ['idle', 'error', 'cancelled'].includes(item.status));\n\t\tawait Promise.all(uploadable.map((item) => uploadItem(item.id)));\n\t}\n</script>\n\n<div data-slot=\"file-dropzone\" class={cn('grid gap-4', className)}>\n\t<Input\n\t\t{...inputProps}\n\t\tbind:ref={fileInput}\n\t\tid={inputId}\n\t\ttype=\"file\"\n\t\t{name}\n\t\t{accept}\n\t\t{multiple}\n\t\t{disabled}\n\t\toninput={handleSelection}\n\t\tclass=\"sr-only\"\n\t/>\n\n\t<button\n\t\ttype=\"button\"\n\t\t{disabled}\n\t\taria-describedby={rejectionMessage ? rejectionId : undefined}\n\t\tonclick={() => fileInput?.click()}\n\t\tondragenter={(event) => {\n\t\t\tevent.preventDefault();\n\t\t\tif (!disabled) dragging = true;\n\t\t}}\n\t\tondragover={(event) => event.preventDefault()}\n\t\tondragleave={() => (dragging = false)}\n\t\tondrop={handleDrop}\n\t\tclass={cn(\n\t\t\t'grid min-h-40 w-full place-items-center rounded-xl border border-dashed border-border bg-muted/20 p-6 text-center transition-colors outline-none hover:bg-muted/40 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50',\n\t\t\tdragging && 'border-primary bg-primary/5',\n\t\t\tdropzoneClass\n\t\t)}\n\t>\n\t\t<span class=\"grid justify-items-center gap-2\">\n\t\t\t<span\n\t\t\t\tclass=\"grid size-10 place-items-center rounded-full border border-border bg-background shadow-xs\"\n\t\t\t>\n\t\t\t\t<UploadIcon class=\"size-4 text-muted-foreground\" aria-hidden=\"true\" />\n\t\t\t</span>\n\t\t\t<span class=\"text-sm font-medium text-foreground\">{dropLabel}</span>\n\t\t\t<span class=\"text-xs text-muted-foreground\">{browseLabel}</span>\n\t\t</span>\n\t</button>\n\n\t{#if rejectionMessage}\n\t\t<p id={rejectionId} class=\"text-xs text-destructive\" role=\"alert\">{rejectionMessage}</p>\n\t{/if}\n\n\t{#if items.length}\n\t\t<div class=\"flex items-center justify-between gap-3\">\n\t\t\t<p class=\"text-sm font-medium text-foreground\">\n\t\t\t\t{items.length} file{items.length === 1 ? '' : 's'}\n\t\t\t</p>\n\t\t\t<div class=\"flex items-center gap-1\">\n\t\t\t\t{#if onUpload}\n\t\t\t\t\t<Button size=\"sm\" onclick={uploadAll} disabled={!canUpload || uploading}>\n\t\t\t\t\t\t{#if uploading}<LoaderCircleIcon class=\"animate-spin\" aria-hidden=\"true\" />{/if}\n\t\t\t\t\t\tUpload all\n\t\t\t\t\t</Button>\n\t\t\t\t{/if}\n\t\t\t\t<Button variant=\"ghost\" size=\"sm\" onclick={clearFiles} {disabled}>Clear</Button>\n\t\t\t</div>\n\t\t</div>\n\n\t\t<ul class={cn('grid gap-2', listClass)} aria-label=\"Selected files\">\n\t\t\t{#each items as item (item.id)}\n\t\t\t\t<li class=\"rounded-xl border border-border bg-background p-3 shadow-xs\">\n\t\t\t\t\t<div class=\"flex min-w-0 items-center gap-3\">\n\t\t\t\t\t\t<span class=\"grid size-9 shrink-0 place-items-center rounded-lg bg-muted\">\n\t\t\t\t\t\t\t<FileIcon class=\"size-4 text-muted-foreground\" aria-hidden=\"true\" />\n\t\t\t\t\t\t</span>\n\n\t\t\t\t\t\t<div class=\"min-w-0 flex-1\">\n\t\t\t\t\t\t\t{#if editingId === item.id}\n\t\t\t\t\t\t\t\t<form class=\"flex items-center gap-1\" onsubmit={(event) => saveRename(event, item)}>\n\t\t\t\t\t\t\t\t\t<Input\n\t\t\t\t\t\t\t\t\t\tbind:value={renameValue}\n\t\t\t\t\t\t\t\t\t\taria-label={`Rename ${item.file.name}`}\n\t\t\t\t\t\t\t\t\t\tclass=\"h-7\"\n\t\t\t\t\t\t\t\t\t/>\n\t\t\t\t\t\t\t\t\t<Button type=\"submit\" variant=\"ghost\" size=\"icon-sm\" aria-label=\"Save filename\">\n\t\t\t\t\t\t\t\t\t\t<CheckIcon aria-hidden=\"true\" />\n\t\t\t\t\t\t\t\t\t</Button>\n\t\t\t\t\t\t\t\t\t<Button\n\t\t\t\t\t\t\t\t\t\ttype=\"button\"\n\t\t\t\t\t\t\t\t\t\tvariant=\"ghost\"\n\t\t\t\t\t\t\t\t\t\tsize=\"icon-sm\"\n\t\t\t\t\t\t\t\t\t\taria-label=\"Cancel rename\"\n\t\t\t\t\t\t\t\t\t\tonclick={() => (editingId = null)}\n\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t\t\t<XIcon aria-hidden=\"true\" />\n\t\t\t\t\t\t\t\t\t</Button>\n\t\t\t\t\t\t\t\t</form>\n\t\t\t\t\t\t\t{:else}\n\t\t\t\t\t\t\t\t<p class=\"truncate text-sm font-medium text-foreground\" title={item.file.name}>\n\t\t\t\t\t\t\t\t\t{item.file.name}\n\t\t\t\t\t\t\t\t</p>\n\t\t\t\t\t\t\t\t<p class=\"mt-0.5 text-xs text-muted-foreground\">\n\t\t\t\t\t\t\t\t\t{formatFileSize(item.file.size)}\n\t\t\t\t\t\t\t\t\t{#if item.status === 'complete'}\n\t\t\t\t\t\t\t\t\t\t· Uploaded{/if}\n\t\t\t\t\t\t\t\t\t{#if item.status === 'cancelled'}\n\t\t\t\t\t\t\t\t\t\t· Cancelled{/if}\n\t\t\t\t\t\t\t\t</p>\n\t\t\t\t\t\t\t{/if}\n\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t{#if editingId !== item.id}\n\t\t\t\t\t\t\t<div class=\"flex shrink-0 items-center gap-1\">\n\t\t\t\t\t\t\t\t{#if onUpload && item.status !== 'complete' && item.status !== 'uploading'}\n\t\t\t\t\t\t\t\t\t<Button\n\t\t\t\t\t\t\t\t\t\tvariant=\"ghost\"\n\t\t\t\t\t\t\t\t\t\tsize=\"icon-sm\"\n\t\t\t\t\t\t\t\t\t\t{disabled}\n\t\t\t\t\t\t\t\t\t\taria-label={item.status === 'error'\n\t\t\t\t\t\t\t\t\t\t\t? `Retry ${item.file.name}`\n\t\t\t\t\t\t\t\t\t\t\t: `Upload ${item.file.name}`}\n\t\t\t\t\t\t\t\t\t\tonclick={() => uploadItem(item.id)}\n\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t\t\t{#if item.status === 'error'}\n\t\t\t\t\t\t\t\t\t\t\t<RotateCcwIcon aria-hidden=\"true\" />\n\t\t\t\t\t\t\t\t\t\t{:else}\n\t\t\t\t\t\t\t\t\t\t\t<UploadIcon aria-hidden=\"true\" />\n\t\t\t\t\t\t\t\t\t\t{/if}\n\t\t\t\t\t\t\t\t\t</Button>\n\t\t\t\t\t\t\t\t{/if}\n\t\t\t\t\t\t\t\t<Button\n\t\t\t\t\t\t\t\t\tvariant=\"ghost\"\n\t\t\t\t\t\t\t\t\tsize=\"icon-sm\"\n\t\t\t\t\t\t\t\t\tdisabled={disabled || item.status === 'uploading'}\n\t\t\t\t\t\t\t\t\taria-label={`Rename ${item.file.name}`}\n\t\t\t\t\t\t\t\t\tonclick={() => beginRename(item)}\n\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t\t<PencilIcon aria-hidden=\"true\" />\n\t\t\t\t\t\t\t\t</Button>\n\t\t\t\t\t\t\t\t<Button\n\t\t\t\t\t\t\t\t\tvariant=\"ghost\"\n\t\t\t\t\t\t\t\t\tsize=\"icon-sm\"\n\t\t\t\t\t\t\t\t\t{disabled}\n\t\t\t\t\t\t\t\t\taria-label={`Remove ${item.file.name}`}\n\t\t\t\t\t\t\t\t\tonclick={() => removeItem(item.id)}\n\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t\t<XIcon aria-hidden=\"true\" />\n\t\t\t\t\t\t\t\t</Button>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t{/if}\n\t\t\t\t\t</div>\n\n\t\t\t\t\t{#if item.status === 'uploading' || item.status === 'complete'}\n\t\t\t\t\t\t<div class=\"mt-3 flex items-center gap-2\">\n\t\t\t\t\t\t\t<div\n\t\t\t\t\t\t\t\tclass=\"h-1.5 flex-1 overflow-hidden rounded-full bg-muted\"\n\t\t\t\t\t\t\t\trole=\"progressbar\"\n\t\t\t\t\t\t\t\taria-label={`Upload progress for ${item.file.name}`}\n\t\t\t\t\t\t\t\taria-valuemin=\"0\"\n\t\t\t\t\t\t\t\taria-valuemax=\"100\"\n\t\t\t\t\t\t\t\taria-valuenow={Math.round(item.progress)}\n\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t<div\n\t\t\t\t\t\t\t\t\tclass=\"h-full rounded-full bg-primary transition-[width]\"\n\t\t\t\t\t\t\t\t\tstyle:width={`${item.progress}%`}\n\t\t\t\t\t\t\t\t></div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<span class=\"w-9 text-right text-xs text-muted-foreground tabular-nums\">\n\t\t\t\t\t\t\t\t{Math.round(item.progress)}%\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t{/if}\n\n\t\t\t\t\t{#if item.error}\n\t\t\t\t\t\t<p class=\"mt-2 text-xs text-destructive\" role=\"alert\">{item.error}</p>\n\t\t\t\t\t{/if}\n\t\t\t\t</li>\n\t\t\t{/each}\n\t\t</ul>\n\t{/if}\n</div>\n",
+			"type": "registry:ui",
+			"target": "file-dropzone/file-dropzone.svelte"
+		},
+		{
+			"content": "export { default as FileDropzone } from './file-dropzone.svelte';\nexport { formatFileSize } from './file-dropzone.svelte';\nexport type {\n\tFileDropzoneItem,\n\tFileRejection,\n\tFileRejectionReason,\n\tFileUploadContext,\n\tFileUploader,\n\tFileUploadStatus\n} from './file-dropzone.svelte';\n",
+			"type": "registry:ui",
+			"target": "file-dropzone/index.ts"
+		}
+	]
+}

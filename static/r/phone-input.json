@@ -1,0 +1,85 @@
+{
+	"$schema": "https://shadcn-svelte.com/schema/registry-item.json",
+	"name": "phone-input",
+	"title": "Phone Input",
+	"type": "registry:ui",
+	"description": "A phone field with accessible E.164 validation for messaging providers such as AWS.",
+	"dependencies": [
+		"libphonenumber-js@^1.13.12"
+	],
+	"registryDependencies": [
+		"input",
+		"utils"
+	],
+	"meta": {
+		"docs": {
+			"usage": "Bind value to receive the exact E.164 string and bind valid for reactive UI state. Use onValueChange when a value change should trigger a side effect. Pass countries={['UNITED_STATES']} to accept only complete U.S. numbers such as +15404441234; +1540 remains invalid. Multiple common countries can be allowed in the same array, and any ISO country code is supported. With no countries, any valid international number is accepted. Validation uses international numbering-plan metadata, and the field is composed from the Shadcn Input primitive. The component renders no label or helper copy; it only shows the error when a non-empty value is invalid.",
+			"moreExamples": [
+				{
+					"name": "countries",
+					"title": "Multiple accepted countries",
+					"description": "Accept numbers from several countries while rejecting valid numbers outside the configured list."
+				},
+				{
+					"name": "validation",
+					"title": "Delivery lookup",
+					"description": "Use onValueChange to debounce a side effect once the destination has become valid."
+				}
+			],
+			"api": [
+				{
+					"name": "value",
+					"type": "string (bindable)",
+					"default": "''"
+				},
+				{
+					"name": "valid",
+					"type": "boolean (bindable)",
+					"default": "false"
+				},
+				{
+					"name": "countries",
+					"type": "PhoneCountry[] (common names or ISO codes)",
+					"default": "[] (generic E.164)"
+				},
+				{
+					"name": "error",
+					"type": "string",
+					"default": "Enter a valid phone number, such as +15404441234."
+				},
+				{
+					"name": "onValueChange",
+					"type": "(value: string, valid: boolean) => void",
+					"default": "—"
+				},
+				{
+					"name": "required",
+					"type": "boolean",
+					"default": "false"
+				},
+				{
+					"name": "class",
+					"type": "string",
+					"default": "—"
+				},
+				{
+					"name": "inputClass",
+					"type": "string",
+					"default": "—"
+				}
+			]
+		}
+	},
+	"files": [
+		{
+			"content": "<script module lang=\"ts\">\n\timport parsePhoneNumber from 'libphonenumber-js';\n\timport type { CountryCode } from 'libphonenumber-js';\n\n\texport const PHONE_COUNTRIES = {\n\t\tUNITED_STATES: 'US',\n\t\tCANADA: 'CA',\n\t\tMEXICO: 'MX',\n\t\tBRAZIL: 'BR',\n\t\tARGENTINA: 'AR',\n\t\tCHILE: 'CL',\n\t\tCOLOMBIA: 'CO',\n\t\tPERU: 'PE',\n\t\tCOSTA_RICA: 'CR',\n\t\tPANAMA: 'PA',\n\t\tDOMINICAN_REPUBLIC: 'DO',\n\t\tUNITED_KINGDOM: 'GB',\n\t\tIRELAND: 'IE',\n\t\tFRANCE: 'FR',\n\t\tGERMANY: 'DE',\n\t\tSPAIN: 'ES',\n\t\tPORTUGAL: 'PT',\n\t\tITALY: 'IT',\n\t\tNETHERLANDS: 'NL',\n\t\tBELGIUM: 'BE',\n\t\tSWITZERLAND: 'CH',\n\t\tAUSTRIA: 'AT',\n\t\tSWEDEN: 'SE',\n\t\tNORWAY: 'NO',\n\t\tDENMARK: 'DK',\n\t\tFINLAND: 'FI',\n\t\tPOLAND: 'PL',\n\t\tCZECH_REPUBLIC: 'CZ',\n\t\tROMANIA: 'RO',\n\t\tGREECE: 'GR',\n\t\tUKRAINE: 'UA',\n\t\tTURKEY: 'TR',\n\t\tRUSSIA: 'RU',\n\t\tINDIA: 'IN',\n\t\tPAKISTAN: 'PK',\n\t\tBANGLADESH: 'BD',\n\t\tSRI_LANKA: 'LK',\n\t\tCHINA: 'CN',\n\t\tTAIWAN: 'TW',\n\t\tHONG_KONG: 'HK',\n\t\tJAPAN: 'JP',\n\t\tSOUTH_KOREA: 'KR',\n\t\tSINGAPORE: 'SG',\n\t\tMALAYSIA: 'MY',\n\t\tINDONESIA: 'ID',\n\t\tPHILIPPINES: 'PH',\n\t\tTHAILAND: 'TH',\n\t\tVIETNAM: 'VN',\n\t\tAUSTRALIA: 'AU',\n\t\tNEW_ZEALAND: 'NZ',\n\t\tUNITED_ARAB_EMIRATES: 'AE',\n\t\tSAUDI_ARABIA: 'SA',\n\t\tQATAR: 'QA',\n\t\tKUWAIT: 'KW',\n\t\tISRAEL: 'IL',\n\t\tSOUTH_AFRICA: 'ZA',\n\t\tNIGERIA: 'NG',\n\t\tKENYA: 'KE',\n\t\tEGYPT: 'EG',\n\t\tMOROCCO: 'MA',\n\t\tGHANA: 'GH',\n\t\tTANZANIA: 'TZ',\n\t\tUGANDA: 'UG'\n\t} as const satisfies Record<string, CountryCode>;\n\n\ttype CommonPhoneCountry = keyof typeof PHONE_COUNTRIES;\n\texport type PhoneCountry = CommonPhoneCountry | CountryCode;\n\n\texport const E164_PHONE_PATTERN = /^\\+[1-9][0-9]{1,14}$/;\n\n\tfunction resolveCountry(country: PhoneCountry): CountryCode {\n\t\treturn country in PHONE_COUNTRIES\n\t\t\t? PHONE_COUNTRIES[country as CommonPhoneCountry]\n\t\t\t: (country as CountryCode);\n\t}\n\n\texport function isE164PhoneNumber(value: string, countries: readonly PhoneCountry[] = []) {\n\t\tif (!E164_PHONE_PATTERN.test(value)) return false;\n\n\t\tconst phoneNumber = parsePhoneNumber(value, { extract: false });\n\t\tif (!phoneNumber?.isValid()) return false;\n\t\tif (countries.length === 0) return true;\n\n\t\treturn (\n\t\t\tphoneNumber.country !== undefined &&\n\t\t\tcountries.some((country) => resolveCountry(country) === phoneNumber.country)\n\t\t);\n\t}\n</script>\n\n<script lang=\"ts\">\n\timport type { HTMLInputAttributes } from 'svelte/elements';\n\timport { Input } from '$COMPONENTS$/ui/input';\n\timport { cn } from '$UTILS$.js';\n\n\ttype PhoneInputProps = Omit<\n\t\tHTMLInputAttributes,\n\t\t| 'type'\n\t\t| 'value'\n\t\t| 'files'\n\t\t| 'pattern'\n\t\t| 'maxlength'\n\t\t| 'inputmode'\n\t\t| 'aria-invalid'\n\t\t| 'aria-describedby'\n\t\t| 'oninput'\n\t\t| 'onblur'\n\t> & {\n\t\tvalue?: string;\n\t\tvalid?: boolean;\n\t\tcountries?: readonly PhoneCountry[];\n\t\terror?: string;\n\t\tonValueChange?: (value: string, valid: boolean) => void;\n\t\tclass?: string;\n\t\tinputClass?: string;\n\t};\n\n\tlet {\n\t\tvalue = $bindable(''),\n\t\tcountries = [],\n\t\tvalid = $bindable(isE164PhoneNumber(value, countries)),\n\t\terror = 'Enter a valid phone number, such as +15404441234.',\n\t\tonValueChange,\n\t\tclass: className,\n\t\tinputClass,\n\t\tid,\n\t\t'aria-label': ariaLabel = 'Phone number',\n\t\trequired = false,\n\t\tdisabled = false,\n\t\tplaceholder = '+15404441234',\n\t\t...restProps\n\t}: PhoneInputProps = $props();\n\n\tconst generatedId = $props.id();\n\tconst inputId = $derived(id ?? `${generatedId}-phone`);\n\tconst errorId = $derived(`${inputId}-error`);\n\tconst valueIsValid = $derived(isE164PhoneNumber(value, countries));\n\tconst showError = $derived(Boolean(error) && value !== '' && !valueIsValid);\n\n\tfunction handleInput(event: Event) {\n\t\tvalue = (event.currentTarget as HTMLInputElement).value;\n\t\tvalid = isE164PhoneNumber(value, countries);\n\t\t(event.currentTarget as HTMLInputElement).setCustomValidity(\n\t\t\tvalid ? '' : error || 'Invalid phone number.'\n\t\t);\n\t\tonValueChange?.(value, valid);\n\t}\n</script>\n\n<div data-slot=\"phone-input\" class={cn('grid gap-2', className)}>\n\t<Input\n\t\t{...restProps}\n\t\tid={inputId}\n\t\ttype=\"tel\"\n\t\tinputmode=\"tel\"\n\t\tautocomplete=\"tel\"\n\t\tpattern={E164_PHONE_PATTERN.source}\n\t\tmaxlength={16}\n\t\t{required}\n\t\t{disabled}\n\t\t{placeholder}\n\t\t{value}\n\t\taria-label={ariaLabel}\n\t\taria-invalid={showError}\n\t\taria-describedby={showError ? errorId : undefined}\n\t\toninput={handleInput}\n\t\tclass={cn('h-10 font-mono placeholder:font-sans', inputClass)}\n\t/>\n\t{#if showError}\n\t\t<p id={errorId} class=\"text-xs text-destructive\">{error}</p>\n\t{/if}\n</div>\n",
+			"type": "registry:ui",
+			"target": "phone-input/phone-input.svelte"
+		},
+		{
+			"content": "export { default as PhoneInput } from './phone-input.svelte';\nexport { E164_PHONE_PATTERN, PHONE_COUNTRIES, isE164PhoneNumber } from './phone-input.svelte';\nexport type { PhoneCountry } from './phone-input.svelte';\n",
+			"type": "registry:ui",
+			"target": "phone-input/index.ts"
+		}
+	]
+}

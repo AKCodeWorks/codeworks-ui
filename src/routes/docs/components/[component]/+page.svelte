@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { Tabs } from 'bits-ui';
 	import type { PageData } from './$types';
+	import { Button } from '$lib/components/ui/button';
 	import { Code, languageFromFilename } from '$lib/components/ui/code';
 	import { Install } from '$lib/components/ui/install';
 	import { getComponent } from '$lib/docs/catalog';
@@ -19,36 +21,56 @@
 	<meta name="description" content={component.description} />
 </svelte:head>
 
-<main class="min-w-0 px-5 py-10 sm:px-8 lg:px-12">
+<main class="min-w-0 px-4 py-8 sm:px-8 sm:py-10 lg:px-12">
 	<div class="mx-auto max-w-4xl">
-		<div class="border-b border-border pb-8">
+		<div class="border-b border-border pb-7 sm:pb-8">
 			<p class="text-sm font-medium text-muted-foreground">Components</p>
-			<h1 class="mt-2 text-4xl font-bold tracking-tight">{component.title}</h1>
-			<p class="mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">{component.description}</p>
+			<h1 class="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">{component.title}</h1>
+			<p
+				class="mt-3 max-w-2xl text-base leading-7 text-muted-foreground sm:mt-4 sm:text-lg sm:leading-8"
+			>
+				{component.description}
+			</p>
 		</div>
 
-		<section class="pt-10" aria-labelledby="preview-title">
+		<section class="pt-8 sm:pt-10" aria-labelledby="preview-title">
 			<Tabs.Root value="preview">
-				<div class="mb-4 flex items-center justify-between">
-					<h2 id="preview-title" class="text-2xl font-semibold tracking-tight">Preview</h2>
+				<div class="mb-4 grid gap-3 sm:flex sm:items-center sm:justify-between sm:gap-4">
+					<div class="flex flex-wrap items-center justify-between gap-3">
+						<h2 id="preview-title" class="text-2xl font-semibold tracking-tight">Preview</h2>
+						{#if component.name === 'error'}
+							<Button
+								href={resolve('/docs/components/[component]/client-error', {
+									component: 'error'
+								})}
+								variant="destructive"
+								size="sm"
+								data-sveltekit-preload-data="off"
+							>
+								Throw client error
+							</Button>
+						{/if}
+					</div>
 					<Tabs.List
 						aria-label="Component example"
-						class="flex rounded-md border border-border p-1 text-sm text-muted-foreground"
+						class="grid w-full grid-cols-2 rounded-md border border-border p-1 text-sm text-muted-foreground sm:flex sm:w-auto"
 					>
 						<Tabs.Trigger
 							value="preview"
-							class="rounded px-3 py-1.5 transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none data-[state=active]:bg-muted data-[state=active]:font-medium data-[state=active]:text-foreground"
+							class="rounded px-3 py-1.5 whitespace-nowrap transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none data-[state=active]:bg-muted data-[state=active]:font-medium data-[state=active]:text-foreground"
 							>Preview</Tabs.Trigger
 						>
 						<Tabs.Trigger
 							value="code"
-							class="rounded px-3 py-1.5 transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none data-[state=active]:bg-muted data-[state=active]:font-medium data-[state=active]:text-foreground"
+							class="rounded px-3 py-1.5 whitespace-nowrap transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none data-[state=active]:bg-muted data-[state=active]:font-medium data-[state=active]:text-foreground"
 							>View Code</Tabs.Trigger
 						>
 					</Tabs.List>
 				</div>
 				<Tabs.Content value="preview">
-					<div class="grid min-h-80 place-items-center rounded-xl border border-border bg-card p-8">
+					<div
+						class="grid min-h-72 place-items-center rounded-xl border border-border bg-card p-3 sm:min-h-80 sm:p-8"
+					>
 						<Demo />
 					</div>
 				</Tabs.Content>
@@ -72,7 +94,9 @@
 						{@const Example = example.demo}
 						<article aria-labelledby={`example-${example.name}`}>
 							<Tabs.Root value="preview">
-								<div class="mb-4 flex items-end justify-between gap-4">
+								<div
+									class="mb-4 flex flex-col items-start gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4"
+								>
 									<div>
 										<h3 id={`example-${example.name}`} class="text-lg font-semibold">
 											{example.title}
@@ -83,23 +107,23 @@
 									</div>
 									<Tabs.List
 										aria-label={`${example.title} example`}
-										class="flex shrink-0 rounded-md border border-border p-1 text-sm text-muted-foreground"
+										class="grid w-full grid-cols-2 rounded-md border border-border p-1 text-sm text-muted-foreground sm:flex sm:w-auto sm:shrink-0"
 									>
 										<Tabs.Trigger
 											value="preview"
-											class="rounded px-3 py-1.5 transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none data-[state=active]:bg-muted data-[state=active]:font-medium data-[state=active]:text-foreground"
+											class="rounded px-3 py-1.5 whitespace-nowrap transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none data-[state=active]:bg-muted data-[state=active]:font-medium data-[state=active]:text-foreground"
 											>Preview</Tabs.Trigger
 										>
 										<Tabs.Trigger
 											value="code"
-											class="rounded px-3 py-1.5 transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none data-[state=active]:bg-muted data-[state=active]:font-medium data-[state=active]:text-foreground"
+											class="rounded px-3 py-1.5 whitespace-nowrap transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none data-[state=active]:bg-muted data-[state=active]:font-medium data-[state=active]:text-foreground"
 											>View Code</Tabs.Trigger
 										>
 									</Tabs.List>
 								</div>
 								<Tabs.Content value="preview">
 									<div
-										class="grid min-h-80 place-items-center rounded-xl border border-border bg-card p-8"
+										class="grid min-h-72 place-items-center rounded-xl border border-border bg-card p-3 sm:min-h-80 sm:p-8"
 									>
 										<Example />
 									</div>

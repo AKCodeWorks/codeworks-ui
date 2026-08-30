@@ -112,7 +112,7 @@
 		aria-expanded={open}
 		aria-controls={listboxId}
 		aria-activedescendant={activeResult ? `${searchId}-${activeResult.name}` : undefined}
-		class="h-9 w-full rounded-md border border-border bg-muted/40 pr-3 pl-9 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-ring focus:bg-background focus:ring-2 focus:ring-ring/20"
+		class="h-9 w-full rounded-md border border-border bg-muted/40 pr-3 pl-9 text-base text-foreground outline-none placeholder:text-muted-foreground focus:border-ring focus:bg-background focus:ring-2 focus:ring-ring/20 md:text-sm"
 	/>
 
 	{#if open}

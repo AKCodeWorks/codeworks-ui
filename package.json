@@ -43,6 +43,7 @@
 		"@sveltejs/adapter-node": "^5.5.7",
 		"bits-ui": "^2.19.0",
 		"clsx": "^2.1.1",
+		"libphonenumber-js": "^1.13.12",
 		"mode-watcher": "^1.1.0",
 		"tailwind-merge": "^3.6.0"
 	}

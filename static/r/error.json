@@ -1,0 +1,113 @@
+{
+	"$schema": "https://shadcn-svelte.com/schema/registry-item.json",
+	"name": "error",
+	"title": "Error",
+	"type": "registry:ui",
+	"description": "A polished SvelteKit error-page presentation with status-aware messaging, recovery actions, and custom content.",
+	"dependencies": [
+		"@lucide/svelte@^1.37.0"
+	],
+	"devDependencies": [
+		"@lucide/svelte@^1.37.0"
+	],
+	"registryDependencies": [
+		"button",
+		"utils"
+	],
+	"meta": {
+		"docs": {
+			"usage": "In +error.svelte, import page from $app/state and pass status={page.status} and error={page.error}. Error derives a friendly title from common HTTP statuses and displays the error message SvelteKit exposes. Use title or message to override either value, configure the home and retry actions, and pass children for support references, technical details, or custom controls below the error.",
+			"moreExamples": [
+				{
+					"name": "custom-content",
+					"title": "Additional error details",
+					"description": "Render support references, disclosure panels, or any custom content beneath the error."
+				},
+				{
+					"name": "minimal",
+					"title": "Message only",
+					"description": "Hide the default recovery actions for errors that should not offer navigation or retry."
+				}
+			],
+			"api": [
+				{
+					"name": "status",
+					"type": "number",
+					"default": "required"
+				},
+				{
+					"name": "error",
+					"type": "App.Error | Error | string | null",
+					"default": "required"
+				},
+				{
+					"name": "title",
+					"type": "string",
+					"default": "derived from status"
+				},
+				{
+					"name": "message",
+					"type": "string",
+					"default": "error.message"
+				},
+				{
+					"name": "homeHref",
+					"type": "string | null",
+					"default": "/"
+				},
+				{
+					"name": "homeLabel",
+					"type": "string",
+					"default": "Go home"
+				},
+				{
+					"name": "showRetry",
+					"type": "boolean",
+					"default": "true"
+				},
+				{
+					"name": "retryLabel",
+					"type": "string",
+					"default": "Try again"
+				},
+				{
+					"name": "onRetry",
+					"type": "() => void",
+					"default": "location.reload"
+				},
+				{
+					"name": "children",
+					"type": "Snippet",
+					"default": "—"
+				},
+				{
+					"name": "class",
+					"type": "string",
+					"default": "—"
+				},
+				{
+					"name": "contentClass",
+					"type": "string",
+					"default": "—"
+				},
+				{
+					"name": "childrenClass",
+					"type": "string",
+					"default": "—"
+				}
+			]
+		}
+	},
+	"files": [
+		{
+			"content": "<script module lang=\"ts\">\n\timport type { Snippet } from 'svelte';\n\timport type { HTMLAttributes } from 'svelte/elements';\n\n\texport type ErrorProps = Omit<HTMLAttributes<HTMLDivElement>, 'title' | 'children'> & {\n\t\tstatus: number;\n\t\terror: App.Error | Error | string | null | undefined;\n\t\ttitle?: string;\n\t\tmessage?: string;\n\t\thomeHref?: string | null;\n\t\thomeLabel?: string;\n\t\tshowRetry?: boolean;\n\t\tretryLabel?: string;\n\t\tonRetry?: () => void;\n\t\tchildren?: Snippet;\n\t\tclass?: string;\n\t\tcontentClass?: string;\n\t\tchildrenClass?: string;\n\t};\n\n\texport function errorTitle(status: number) {\n\t\tconst titles: Record<number, string> = {\n\t\t\t400: 'That request did not look right',\n\t\t\t401: 'Sign in to continue',\n\t\t\t403: 'You cannot access this page',\n\t\t\t404: 'This page wandered off',\n\t\t\t408: 'The request took too long',\n\t\t\t409: 'Something changed along the way',\n\t\t\t422: 'We could not process that',\n\t\t\t429: 'A little too much, too quickly',\n\t\t\t500: 'Something went wrong on our side',\n\t\t\t502: 'The server returned a bad response',\n\t\t\t503: 'We will be right back',\n\t\t\t504: 'The server took too long to respond'\n\t\t};\n\n\t\treturn titles[status] ?? (status >= 500 ? 'Something went wrong' : 'We hit a problem');\n\t}\n</script>\n\n<script lang=\"ts\">\n\timport ArrowLeftIcon from '@lucide/svelte/icons/arrow-left';\n\timport RefreshCwIcon from '@lucide/svelte/icons/refresh-cw';\n\timport TriangleAlertIcon from '@lucide/svelte/icons/triangle-alert';\n\timport { Button } from '$COMPONENTS$/ui/button';\n\timport { cn } from '$UTILS$.js';\n\n\tlet {\n\t\tstatus,\n\t\terror,\n\t\ttitle,\n\t\tmessage,\n\t\thomeHref = '/',\n\t\thomeLabel = 'Go home',\n\t\tshowRetry = true,\n\t\tretryLabel = 'Try again',\n\t\tonRetry,\n\t\tchildren,\n\t\tclass: className,\n\t\tcontentClass,\n\t\tchildrenClass,\n\t\t...restProps\n\t}: ErrorProps = $props();\n\n\tconst componentId = $props.id();\n\tconst titleId = `${componentId}-title`;\n\tconst messageId = `${componentId}-message`;\n\tconst resolvedTitle = $derived(title ?? errorTitle(status));\n\tconst errorMessage = $derived(\n\t\tmessage ??\n\t\t\t(typeof error === 'string'\n\t\t\t\t? error\n\t\t\t\t: (error?.message ?? 'An unexpected error prevented this page from loading.'))\n\t);\n\n\tfunction retry() {\n\t\tif (onRetry) {\n\t\t\tonRetry();\n\t\t\treturn;\n\t\t}\n\n\t\twindow.location.reload();\n\t}\n</script>\n\n<div\n\t{...restProps}\n\tdata-slot=\"error\"\n\tdata-status={status}\n\trole=\"alert\"\n\taria-labelledby={titleId}\n\taria-describedby={messageId}\n\tclass={cn(\n\t\t'relative isolate grid min-h-[70svh] w-full place-items-center overflow-hidden rounded-2xl bg-background px-6 py-16 text-center',\n\t\tclassName\n\t)}\n>\n\t<div\n\t\tclass=\"pointer-events-none absolute inset-x-0 top-0 -z-20 mx-auto h-80 max-w-3xl rounded-full bg-primary/8 blur-3xl\"\n\t></div>\n\t<div\n\t\tclass=\"pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,transparent_0%,var(--color-background)_70%)]\"\n\t></div>\n\t<div\n\t\taria-hidden=\"true\"\n\t\tclass=\"pointer-events-none absolute top-1/2 -z-10 -translate-y-1/2 bg-gradient-to-b from-foreground/8 to-transparent bg-clip-text text-[clamp(10rem,35vw,24rem)] leading-none font-black tracking-tighter text-transparent select-none\"\n\t>\n\t\t{status}\n\t</div>\n\n\t<div class={cn('flex w-full max-w-xl flex-col items-center', contentClass)}>\n\t\t<div\n\t\t\tclass=\"mb-6 grid size-14 place-items-center rounded-2xl border border-border bg-card text-foreground shadow-lg shadow-foreground/5\"\n\t\t>\n\t\t\t<TriangleAlertIcon class=\"size-6\" aria-hidden=\"true\" />\n\t\t</div>\n\t\t<p\n\t\t\tclass=\"rounded-full border border-border bg-background/80 px-3 py-1 font-mono text-xs font-medium tracking-wider text-muted-foreground uppercase shadow-xs backdrop-blur\"\n\t\t>\n\t\t\tError {status}\n\t\t</p>\n\t\t<h1 id={titleId} class=\"mt-5 text-3xl font-bold tracking-tight text-balance sm:text-5xl\">\n\t\t\t{resolvedTitle}\n\t\t</h1>\n\t\t<p id={messageId} class=\"mt-4 max-w-lg text-base leading-7 text-pretty text-muted-foreground\">\n\t\t\t{errorMessage}\n\t\t</p>\n\n\t\t{#if homeHref || showRetry}\n\t\t\t<div class=\"mt-8 flex flex-wrap items-center justify-center gap-3\">\n\t\t\t\t{#if homeHref}\n\t\t\t\t\t<Button href={homeHref} size=\"lg\">\n\t\t\t\t\t\t<ArrowLeftIcon aria-hidden=\"true\" />\n\t\t\t\t\t\t{homeLabel}\n\t\t\t\t\t</Button>\n\t\t\t\t{/if}\n\t\t\t\t{#if showRetry}\n\t\t\t\t\t<Button variant=\"outline\" size=\"lg\" onclick={retry}>\n\t\t\t\t\t\t<RefreshCwIcon aria-hidden=\"true\" />\n\t\t\t\t\t\t{retryLabel}\n\t\t\t\t\t</Button>\n\t\t\t\t{/if}\n\t\t\t</div>\n\t\t{/if}\n\n\t\t{#if children}\n\t\t\t<div class={cn('mt-10 w-full border-t border-border pt-6', childrenClass)}>\n\t\t\t\t{@render children()}\n\t\t\t</div>\n\t\t{/if}\n\t</div>\n</div>\n",
+			"type": "registry:ui",
+			"target": "error/error.svelte"
+		},
+		{
+			"content": "export { default as Error, errorTitle } from './error.svelte';\nexport type { ErrorProps } from './error.svelte';\n",
+			"type": "registry:ui",
+			"target": "error/index.ts"
+		}
+	]
+}

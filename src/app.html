@@ -4,6 +4,35 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="text-scale" content="scale" />
+		<meta name="color-scheme" content="light dark" />
+		<style>
+			:root {
+				color: #17171f;
+				background: #ffffff;
+				color-scheme: light;
+			}
+
+			:root.dark {
+				color: #fafafa;
+				background: #17171f;
+				color-scheme: dark;
+			}
+
+			@media (prefers-color-scheme: dark) {
+				:root:not(.light) {
+					color: #fafafa;
+					background: #17171f;
+					color-scheme: dark;
+				}
+			}
+
+			body {
+				min-height: 100%;
+				margin: 0;
+				color: inherit;
+				background: inherit;
+			}
+		</style>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

@@ -258,6 +258,140 @@
 			}
 		},
 		{
+			"name": "error",
+			"type": "registry:ui",
+			"title": "Error",
+			"description": "A polished SvelteKit error-page presentation with status-aware messaging, recovery actions, and custom content.",
+			"dependencies": ["@lucide/svelte@^1.37.0"],
+			"registryDependencies": ["button", "utils"],
+			"files": [
+				{ "path": "src/lib/components/ui/error/error.svelte", "type": "registry:ui" },
+				{ "path": "src/lib/components/ui/error/index.ts", "type": "registry:ui" }
+			],
+			"meta": {
+				"docs": {
+					"usage": "In +error.svelte, import page from $app/state and pass status={page.status} and error={page.error}. Error derives a friendly title from common HTTP statuses and displays the error message SvelteKit exposes. Use title or message to override either value, configure the home and retry actions, and pass children for support references, technical details, or custom controls below the error.",
+					"moreExamples": [
+						{
+							"name": "custom-content",
+							"title": "Additional error details",
+							"description": "Render support references, disclosure panels, or any custom content beneath the error."
+						},
+						{
+							"name": "minimal",
+							"title": "Message only",
+							"description": "Hide the default recovery actions for errors that should not offer navigation or retry."
+						}
+					],
+					"api": [
+						{ "name": "status", "type": "number", "default": "required" },
+						{
+							"name": "error",
+							"type": "App.Error | Error | string | null",
+							"default": "required"
+						},
+						{ "name": "title", "type": "string", "default": "derived from status" },
+						{ "name": "message", "type": "string", "default": "error.message" },
+						{ "name": "homeHref", "type": "string | null", "default": "/" },
+						{ "name": "homeLabel", "type": "string", "default": "Go home" },
+						{ "name": "showRetry", "type": "boolean", "default": "true" },
+						{ "name": "retryLabel", "type": "string", "default": "Try again" },
+						{ "name": "onRetry", "type": "() => void", "default": "location.reload" },
+						{ "name": "children", "type": "Snippet", "default": "—" },
+						{ "name": "class", "type": "string", "default": "—" },
+						{ "name": "contentClass", "type": "string", "default": "—" },
+						{ "name": "childrenClass", "type": "string", "default": "—" }
+					]
+				}
+			}
+		},
+		{
+			"name": "file-dropzone",
+			"type": "registry:ui",
+			"title": "File Dropzone",
+			"description": "A drag-and-drop file manager with renaming, removal, validation, native form support, and callback-driven upload progress.",
+			"dependencies": ["@lucide/svelte@^1.37.0"],
+			"registryDependencies": ["button", "input", "utils"],
+			"files": [
+				{
+					"path": "src/lib/components/ui/file-dropzone/file-dropzone.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/file-dropzone/index.ts",
+					"type": "registry:ui"
+				}
+			],
+			"meta": {
+				"docs": {
+					"usage": "Bind files for application state or provide name to submit the synchronized FileList through a native form. Users can add files by dropping or browsing, inspect file sizes, rename files, and remove individual entries. Pass onUpload to connect any upload helper; call context.onProgress with a value from 0 to 100 and observe context.signal to support cancellation. Uploads can start from each row, through Upload all, or automatically with autoUpload. Use accept, maxFiles, and maxFileSize to reject unsupported selections before upload.",
+					"moreExamples": [
+						{
+							"name": "upload",
+							"title": "Callback uploads",
+							"description": "Connect an asynchronous upload helper and report progress for every file."
+						},
+						{
+							"name": "restrictions",
+							"title": "File restrictions",
+							"description": "Limit file types, count, and size while receiving structured rejection details."
+						}
+					],
+					"api": [
+						{ "name": "files", "type": "File[] (bindable)", "default": "[]" },
+						{
+							"name": "onFilesChange",
+							"type": "(files: File[]) => void",
+							"default": "—"
+						},
+						{
+							"name": "onUpload",
+							"type": "(file: File, context: FileUploadContext) => Promise<void>",
+							"default": "—"
+						},
+						{
+							"name": "FileUploadContext.onProgress",
+							"type": "(progress: number) => void",
+							"default": "—"
+						},
+						{
+							"name": "FileUploadContext.signal",
+							"type": "AbortSignal",
+							"default": "—"
+						},
+						{
+							"name": "onUploadComplete",
+							"type": "(file: File) => void",
+							"default": "—"
+						},
+						{
+							"name": "onUploadError",
+							"type": "(file: File, error: Error) => void",
+							"default": "—"
+						},
+						{
+							"name": "onReject",
+							"type": "(rejections: FileRejection[]) => void",
+							"default": "—"
+						},
+						{ "name": "autoUpload", "type": "boolean", "default": "false" },
+						{ "name": "name", "type": "string", "default": "—" },
+						{ "name": "accept", "type": "string", "default": "—" },
+						{ "name": "multiple", "type": "boolean", "default": "true" },
+						{ "name": "maxFiles", "type": "number", "default": "Infinity" },
+						{ "name": "maxFileSize", "type": "number (bytes)", "default": "—" },
+						{ "name": "disabled", "type": "boolean", "default": "false" },
+						{ "name": "dropLabel", "type": "string", "default": "Drop files here" },
+						{ "name": "browseLabel", "type": "string", "default": "or choose files" },
+						{ "name": "class", "type": "string", "default": "—" },
+						{ "name": "dropzoneClass", "type": "string", "default": "—" },
+						{ "name": "listClass", "type": "string", "default": "—" },
+						{ "name": "inputProps", "type": "HTML input props", "default": "—" }
+					]
+				}
+			}
+		},
+		{
 			"name": "install",
 			"type": "registry:ui",
 			"title": "Install",
@@ -553,6 +687,63 @@
 						{ "name": "containerClass", "type": "string", "default": "—" },
 						{ "name": "contentClass", "type": "string", "default": "—" },
 						{ "name": "class", "type": "string", "default": "—" }
+					]
+				}
+			}
+		},
+		{
+			"name": "phone-input",
+			"type": "registry:ui",
+			"title": "Phone Input",
+			"description": "A phone field with accessible E.164 validation for messaging providers such as AWS.",
+			"dependencies": ["libphonenumber-js@^1.13.12"],
+			"registryDependencies": ["input", "utils"],
+			"files": [
+				{
+					"path": "src/lib/components/ui/phone-input/phone-input.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/phone-input/index.ts",
+					"type": "registry:ui"
+				}
+			],
+			"meta": {
+				"docs": {
+					"usage": "Bind value to receive the exact E.164 string and bind valid for reactive UI state. Use onValueChange when a value change should trigger a side effect. Pass countries={['UNITED_STATES']} to accept only complete U.S. numbers such as +15404441234; +1540 remains invalid. Multiple common countries can be allowed in the same array, and any ISO country code is supported. With no countries, any valid international number is accepted. Validation uses international numbering-plan metadata, and the field is composed from the Shadcn Input primitive. The component renders no label or helper copy; it only shows the error when a non-empty value is invalid.",
+					"moreExamples": [
+						{
+							"name": "countries",
+							"title": "Multiple accepted countries",
+							"description": "Accept numbers from several countries while rejecting valid numbers outside the configured list."
+						},
+						{
+							"name": "validation",
+							"title": "Delivery lookup",
+							"description": "Use onValueChange to debounce a side effect once the destination has become valid."
+						}
+					],
+					"api": [
+						{ "name": "value", "type": "string (bindable)", "default": "''" },
+						{ "name": "valid", "type": "boolean (bindable)", "default": "false" },
+						{
+							"name": "countries",
+							"type": "PhoneCountry[] (common names or ISO codes)",
+							"default": "[] (generic E.164)"
+						},
+						{
+							"name": "error",
+							"type": "string",
+							"default": "Enter a valid phone number, such as +15404441234."
+						},
+						{
+							"name": "onValueChange",
+							"type": "(value: string, valid: boolean) => void",
+							"default": "—"
+						},
+						{ "name": "required", "type": "boolean", "default": "false" },
+						{ "name": "class", "type": "string", "default": "—" },
+						{ "name": "inputClass", "type": "string", "default": "—" }
 					]
 				}
 			}

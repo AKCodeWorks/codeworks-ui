@@ -12,17 +12,15 @@
 		>
 			Svelte 5 · Bits UI · Tailwind CSS
 		</div>
-		<h1 class="max-w-3xl text-4xl font-bold tracking-tight sm:text-6xl">
-			Beautiful components you can actually own.
-		</h1>
+		<h1 class="max-w-3xl text-4xl font-bold tracking-tight sm:text-6xl">CodeWorks UI</h1>
 		<p class="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
-			A shadcn-compatible Svelte registry of accessible, composable primitives. Install the source,
-			adapt it, and keep it yours.
+			A Shadcn registry of Svelte components.
 		</p>
 		<div class="mt-8">
 			<a
 				href={resolve('/docs/components/[component]', { component: 'aura' })}
-				class="inline-flex h-11 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
+				data-sveltekit-reload
+				class="inline-flex h-11 touch-manipulation items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
 				>Browse components</a
 			>
 		</div>

@@ -2,6 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
+	import type { LayoutData } from './$types';
 	import { ModeWatcher, toggleMode } from 'mode-watcher';
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.png';
@@ -9,7 +10,7 @@
 	import { components } from '$lib/docs/catalog';
 	import ComponentSearch from '$lib/docs/component-search.svelte';
 
-	let { children }: { children: Snippet } = $props();
+	let { data, children }: { data: LayoutData; children: Snippet } = $props();
 
 	const navigationItems = $derived.by(
 		() =>
@@ -29,7 +30,18 @@
 						description: component.description,
 						active: page.url.pathname.endsWith(`/${component.name}`)
 					}))
-				}
+				},
+				...(data.showPlayground
+					? [
+							{
+								label: 'Playground',
+								href: resolve('/playground'),
+								description: 'Test component demos and remote functions.',
+								badge: 'Dev',
+								active: page.url.pathname.startsWith('/playground')
+							}
+						]
+					: [])
 			] satisfies NavbarItem[]
 	);
 </script>
@@ -42,7 +54,7 @@
 	/>
 </svelte:head>
 
-<ModeWatcher themeColors={{ light: '#ffffff', dark: '#09090b' }} />
+<ModeWatcher lightClassNames={['light']} themeColors={{ light: '#ffffff', dark: '#09090b' }} />
 
 {#snippet brand()}
 	<img src={favicon} alt="" class="size-7 rounded-md" />
