@@ -60,7 +60,7 @@
 
 <div
 	data-slot="holographic"
-	class={cn('relative isolate overflow-hidden', className)}
+	class={cn('holographic-clip relative isolate overflow-hidden', className)}
 	style:--holographic-gradient={gradient}
 	style:--holographic-opacity={opacity}
 >
@@ -76,3 +76,10 @@
 		class="pointer-events-none absolute inset-y-0 -left-1/2 z-30 w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-25 mix-blend-soft-light blur-2xl motion-reduce:hidden"
 	></div>
 </div>
+
+<style>
+	.holographic-clip {
+		mask-image: radial-gradient(white, black);
+		-webkit-mask-image: -webkit-radial-gradient(white, black);
+	}
+</style>

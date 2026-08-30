@@ -23,7 +23,7 @@
 			],
 			"meta": {
 				"docs": {
-					"usage": "Wrap a single child with Aura. The child remains directly inside the wrapper, so buttons, inputs, cards, and custom components work without structural changes. Choose a visual variant and size, then use class to match the wrapper radius to your content. Pass color for a single CSS color or colors for a custom multi-color palette. Background colors and animation durations are also customizable, and reduced-motion preferences are respected.",
+					"usage": "Wrap content with Aura, choose a visual variant and size, then use class to match the wrapper radius to your content. Aura provides an internal rounded clipping layer while allowing the outer glow to remain visible. Pass color for a single CSS color or colors for a custom multi-color palette. Background colors and animation durations are customizable, and reduced-motion preferences are respected.",
 					"moreExamples": [
 						{
 							"name": "variants",
@@ -971,6 +971,119 @@
 						{ "name": "class", "type": "string", "default": "—" },
 						{ "name": "contentClass", "type": "string", "default": "—" },
 						{ "name": "children", "type": "Snippet", "default": "required" }
+					]
+				}
+			}
+		},
+		{
+			"name": "typewriter",
+			"type": "registry:ui",
+			"title": "Typewriter",
+			"description": "Animates a string or sequence of strings as inline text when it first enters the viewport.",
+			"dependencies": [],
+			"registryDependencies": ["utils"],
+			"files": [
+				{
+					"path": "src/lib/components/ui/typewriter/typewriter.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/typewriter/index.ts",
+					"type": "registry:ui"
+				}
+			],
+			"meta": {
+				"docs": {
+					"usage": [
+						"Place Typewriter anywhere ordinary inline text can appear and pass value as a string or array of strings.",
+						"The animation begins once when the span first enters the viewport. Set loop to cycle continuously through every supplied phrase.",
+						"Timing, cursor presentation, and lifecycle callbacks are configurable. Reduced-motion preferences display the final text immediately."
+					],
+					"moreExamples": [
+						{
+							"name": "phrases",
+							"title": "Looping phrases",
+							"description": "Cycle through an array of phrases with typing, pausing, and deletion between each value."
+						},
+						{
+							"name": "inline",
+							"title": "Inline text",
+							"description": "Insert the span directly into a sentence without introducing a block-level wrapper."
+						}
+					],
+					"api": [
+						{
+							"name": "value",
+							"type": "string | string[]",
+							"default": "required",
+							"description": "Text or sequence of phrases to type."
+						},
+						{
+							"name": "loop",
+							"type": "boolean",
+							"default": "false",
+							"description": "Deletes and repeats the supplied phrases continuously."
+						},
+						{
+							"name": "speed",
+							"type": "number (milliseconds)",
+							"default": "70",
+							"description": "Delay between each typed or deleted grapheme cluster."
+						},
+						{
+							"name": "pauseDuration",
+							"type": "number (milliseconds)",
+							"default": "1200",
+							"description": "Time a completed phrase remains visible before deletion begins."
+						},
+						{
+							"name": "startDelay",
+							"type": "number (milliseconds)",
+							"default": "0",
+							"description": "Delay after the component enters the viewport before typing starts."
+						},
+						{
+							"name": "showCursor",
+							"type": "boolean",
+							"default": "true",
+							"description": "Shows the blinking cursor when enabled."
+						},
+						{
+							"name": "cursorCharacter",
+							"type": "string",
+							"default": "|",
+							"description": "Character rendered as the cursor."
+						},
+						{
+							"name": "ariaLabel",
+							"type": "string",
+							"default": "joined phrases",
+							"description": "Stable text exposed to assistive technology instead of incremental updates."
+						},
+						{
+							"name": "onPhraseChange",
+							"type": "(value: string, index: number) => void",
+							"default": "—",
+							"description": "Called when typing moves to a new phrase."
+						},
+						{
+							"name": "onComplete",
+							"type": "() => void",
+							"default": "—",
+							"description": "Called when a non-looping sequence finishes."
+						},
+						{
+							"name": "class",
+							"type": "string",
+							"default": "—",
+							"description": "Tailwind CSS classes applied to the outer span."
+						},
+						{
+							"name": "cursorClass",
+							"type": "string",
+							"default": "—",
+							"description": "Tailwind CSS classes applied to the cursor span."
+						}
 					]
 				}
 			}

@@ -53,3 +53,5 @@ export * as Steps from './components/ui/steps';
 export type { StepsDirection, StepState, StepVariant } from './components/ui/steps';
 export { Tooltip } from './components/ui/tooltip';
 export type { TooltipAlign, TooltipSide } from './components/ui/tooltip';
+export { Typewriter } from './components/ui/typewriter';
+export type { TypewriterProps } from './components/ui/typewriter';

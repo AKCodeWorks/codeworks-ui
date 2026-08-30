@@ -1,0 +1,117 @@
+{
+	"$schema": "https://shadcn-svelte.com/schema/registry-item.json",
+	"name": "typewriter",
+	"title": "Typewriter",
+	"type": "registry:ui",
+	"description": "Animates a string or sequence of strings as inline text when it first enters the viewport.",
+	"registryDependencies": [
+		"utils"
+	],
+	"meta": {
+		"docs": {
+			"usage": [
+				"Place Typewriter anywhere ordinary inline text can appear and pass value as a string or array of strings.",
+				"The animation begins once when the span first enters the viewport. Set loop to cycle continuously through every supplied phrase.",
+				"Timing, cursor presentation, and lifecycle callbacks are configurable. Reduced-motion preferences display the final text immediately."
+			],
+			"moreExamples": [
+				{
+					"name": "phrases",
+					"title": "Looping phrases",
+					"description": "Cycle through an array of phrases with typing, pausing, and deletion between each value."
+				},
+				{
+					"name": "inline",
+					"title": "Inline text",
+					"description": "Insert the span directly into a sentence without introducing a block-level wrapper."
+				}
+			],
+			"api": [
+				{
+					"name": "value",
+					"type": "string | string[]",
+					"default": "required",
+					"description": "Text or sequence of phrases to type."
+				},
+				{
+					"name": "loop",
+					"type": "boolean",
+					"default": "false",
+					"description": "Deletes and repeats the supplied phrases continuously."
+				},
+				{
+					"name": "speed",
+					"type": "number (milliseconds)",
+					"default": "70",
+					"description": "Delay between each typed or deleted grapheme cluster."
+				},
+				{
+					"name": "pauseDuration",
+					"type": "number (milliseconds)",
+					"default": "1200",
+					"description": "Time a completed phrase remains visible before deletion begins."
+				},
+				{
+					"name": "startDelay",
+					"type": "number (milliseconds)",
+					"default": "0",
+					"description": "Delay after the component enters the viewport before typing starts."
+				},
+				{
+					"name": "showCursor",
+					"type": "boolean",
+					"default": "true",
+					"description": "Shows the blinking cursor when enabled."
+				},
+				{
+					"name": "cursorCharacter",
+					"type": "string",
+					"default": "|",
+					"description": "Character rendered as the cursor."
+				},
+				{
+					"name": "ariaLabel",
+					"type": "string",
+					"default": "joined phrases",
+					"description": "Stable text exposed to assistive technology instead of incremental updates."
+				},
+				{
+					"name": "onPhraseChange",
+					"type": "(value: string, index: number) => void",
+					"default": "—",
+					"description": "Called when typing moves to a new phrase."
+				},
+				{
+					"name": "onComplete",
+					"type": "() => void",
+					"default": "—",
+					"description": "Called when a non-looping sequence finishes."
+				},
+				{
+					"name": "class",
+					"type": "string",
+					"default": "—",
+					"description": "Tailwind CSS classes applied to the outer span."
+				},
+				{
+					"name": "cursorClass",
+					"type": "string",
+					"default": "—",
+					"description": "Tailwind CSS classes applied to the cursor span."
+				}
+			]
+		}
+	},
+	"files": [
+		{
+			"content": "<script module lang=\"ts\">\n\timport type { HTMLAttributes } from 'svelte/elements';\n\n\texport type TypewriterProps = HTMLAttributes<HTMLSpanElement> & {\n\t\tvalue: string | string[];\n\t\tloop?: boolean;\n\t\tspeed?: number;\n\t\tpauseDuration?: number;\n\t\tstartDelay?: number;\n\t\tshowCursor?: boolean;\n\t\tcursorCharacter?: string;\n\t\tariaLabel?: string;\n\t\tonPhraseChange?: (value: string, index: number) => void;\n\t\tonComplete?: () => void;\n\t\tcursorClass?: string;\n\t\tclass?: string;\n\t};\n</script>\n\n<script lang=\"ts\">\n\timport type { Attachment } from 'svelte/attachments';\n\timport { cn } from '$UTILS$.js';\n\n\tlet {\n\t\tvalue,\n\t\tloop = false,\n\t\tspeed = 70,\n\t\tpauseDuration = 1200,\n\t\tstartDelay = 0,\n\t\tshowCursor = true,\n\t\tcursorCharacter = '|',\n\t\tariaLabel,\n\t\tonPhraseChange,\n\t\tonComplete,\n\t\tcursorClass,\n\t\tclass: className,\n\t\t...restProps\n\t}: TypewriterProps = $props();\n\n\tlet displayedText = $state('');\n\tlet phraseIndex = 0;\n\tlet characterIndex = 0;\n\tlet deleting = false;\n\tlet timer: ReturnType<typeof setTimeout> | undefined;\n\tlet stopped = false;\n\n\tconst phrases = $derived.by(() => {\n\t\tconst entries = Array.isArray(value) ? value : [value];\n\t\treturn entries.length ? entries : [''];\n\t});\n\tconst accessibleText = $derived(ariaLabel ?? phrases.join(', '));\n\n\tfunction splitText(text: string) {\n\t\tif (typeof Intl.Segmenter === 'function') {\n\t\t\tconst segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' });\n\t\t\treturn Array.from(segmenter.segment(text), ({ segment }) => segment);\n\t\t}\n\n\t\treturn Array.from(text);\n\t}\n\n\tfunction clearTimer() {\n\t\tif (timer === undefined) return;\n\t\tclearTimeout(timer);\n\t\ttimer = undefined;\n\t}\n\n\tfunction schedule(callback: () => void, delay: number) {\n\t\tclearTimer();\n\t\ttimer = setTimeout(callback, Math.max(0, delay));\n\t}\n\n\tfunction finish() {\n\t\tclearTimer();\n\t\tonComplete?.();\n\t}\n\n\tfunction typeNextCharacter() {\n\t\tif (stopped) return;\n\n\t\tconst currentIndex = Math.min(phraseIndex, phrases.length - 1);\n\t\tconst phrase = phrases[currentIndex] ?? '';\n\t\tconst characters = splitText(phrase);\n\n\t\tif (!deleting && characterIndex < characters.length) {\n\t\t\tcharacterIndex += 1;\n\t\t\tdisplayedText = characters.slice(0, characterIndex).join('');\n\t\t\tschedule(typeNextCharacter, speed);\n\t\t\treturn;\n\t\t}\n\n\t\tconst isLastPhrase = currentIndex === phrases.length - 1;\n\t\tif (!deleting && !loop && isLastPhrase) {\n\t\t\tfinish();\n\t\t\treturn;\n\t\t}\n\n\t\tif (!deleting) {\n\t\t\tdeleting = true;\n\t\t\tschedule(typeNextCharacter, pauseDuration);\n\t\t\treturn;\n\t\t}\n\n\t\tif (characterIndex > 0) {\n\t\t\tcharacterIndex -= 1;\n\t\t\tdisplayedText = characters.slice(0, characterIndex).join('');\n\t\t\tschedule(typeNextCharacter, speed);\n\t\t\treturn;\n\t\t}\n\n\t\tdeleting = false;\n\t\tphraseIndex = isLastPhrase ? 0 : currentIndex + 1;\n\t\tonPhraseChange?.(phrases[phraseIndex] ?? '', phraseIndex);\n\t\tschedule(typeNextCharacter, speed);\n\t}\n\n\tfunction start() {\n\t\tif (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {\n\t\t\tphraseIndex = loop ? 0 : phrases.length - 1;\n\t\t\tdisplayedText = phrases[phraseIndex] ?? '';\n\t\t\tonComplete?.();\n\t\t\treturn;\n\t\t}\n\n\t\tonPhraseChange?.(phrases[0] ?? '', 0);\n\t\tschedule(typeNextCharacter, startDelay);\n\t}\n\n\tconst startWhenVisible: Attachment<HTMLSpanElement> = (element) => {\n\t\tstopped = false;\n\n\t\tif (typeof IntersectionObserver === 'undefined') {\n\t\t\tstart();\n\t\t\treturn () => {\n\t\t\t\tstopped = true;\n\t\t\t\tclearTimer();\n\t\t\t};\n\t\t}\n\n\t\tconst observer = new IntersectionObserver(\n\t\t\t(entries) => {\n\t\t\t\tif (!entries.some((entry) => entry.isIntersecting)) return;\n\t\t\t\tobserver.disconnect();\n\t\t\t\tstart();\n\t\t\t},\n\t\t\t{ threshold: 0.1 }\n\t\t);\n\n\t\tobserver.observe(element);\n\n\t\treturn () => {\n\t\t\tstopped = true;\n\t\t\tobserver.disconnect();\n\t\t\tclearTimer();\n\t\t};\n\t};\n</script>\n\n<span\n\t{@attach startWhenVisible}\n\t{...restProps}\n\tdata-slot=\"typewriter\"\n\tclass={cn('inline', className)}\n>\n\t<span class=\"sr-only\">{accessibleText}</span>\n\t<span aria-hidden=\"true\">{displayedText}</span>{#if showCursor}<span\n\t\t\taria-hidden=\"true\"\n\t\t\tclass={cn('typewriter-cursor inline-block', cursorClass)}>{cursorCharacter}</span\n\t\t>{/if}\n</span>\n\n<style>\n\t.typewriter-cursor {\n\t\tanimation: typewriter-cursor-blink 0.8s step-end infinite;\n\t}\n\n\t@keyframes typewriter-cursor-blink {\n\t\t50% {\n\t\t\topacity: 0;\n\t\t}\n\t}\n\n\t@media (prefers-reduced-motion: reduce) {\n\t\t.typewriter-cursor {\n\t\t\tanimation: none;\n\t\t}\n\t}\n</style>\n",
+			"type": "registry:ui",
+			"target": "typewriter/typewriter.svelte"
+		},
+		{
+			"content": "export { default as Typewriter } from './typewriter.svelte';\nexport type { TypewriterProps } from './typewriter.svelte';\n",
+			"type": "registry:ui",
+			"target": "typewriter/index.ts"
+		}
+	]
+}

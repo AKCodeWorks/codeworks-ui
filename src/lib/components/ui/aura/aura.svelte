@@ -12,7 +12,7 @@
 		class?: import('clsx').ClassValue;
 	} = {}) =>
 		cn(
-			"relative isolate inline-block bg-[image:var(--aura-gradient)] text-violet-500 before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-[inherit] before:bg-[image:var(--aura-gradient)] before:opacity-60 before:blur-sm before:content-[''] after:pointer-events-none after:absolute after:inset-0 after:-z-20 after:rounded-[inherit] after:bg-[image:var(--aura-gradient)] after:opacity-35 after:blur-xl after:content-[''] [&>*]:relative [&>*]:z-10",
+			"relative isolate inline-block text-violet-500 before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-[inherit] before:bg-[image:var(--aura-gradient)] before:opacity-60 before:blur-sm before:content-[''] after:pointer-events-none after:absolute after:inset-0 after:-z-20 after:rounded-[inherit] after:bg-[image:var(--aura-gradient)] after:opacity-35 after:blur-xl after:content-['']",
 			{
 				'p-0': size === 'xs',
 				'p-px': size === 'sm',
@@ -136,7 +136,24 @@
 	style:--aura-spread="90%"
 	style:--aura-color={color ?? 'currentColor'}
 	style:--aura-gradient={gradient}
-	style:background-color={backgroundColor}
 >
-	{@render children()}
+	<div
+		aria-hidden="true"
+		class="aura-frame pointer-events-none absolute inset-0 z-0 rounded-[inherit] bg-[image:var(--aura-gradient)]"
+		style:background-color={backgroundColor}
+	></div>
+	<div
+		data-slot="aura-content"
+		class="aura-content relative z-10 overflow-hidden rounded-[inherit]"
+	>
+		{@render children()}
+	</div>
 </div>
+
+<style>
+	.aura-frame,
+	.aura-content {
+		mask-image: radial-gradient(white, black);
+		-webkit-mask-image: -webkit-radial-gradient(white, black);
+	}
+</style>
