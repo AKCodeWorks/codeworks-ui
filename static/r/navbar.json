@@ -1,0 +1,138 @@
+{
+	"$schema": "https://shadcn-svelte.com/schema/registry-item.json",
+	"name": "navbar",
+	"title": "Navbar",
+	"type": "registry:ui",
+	"description": "A responsive navigation bar with shadcn Popover subroutes and an automatic Sheet menu on mobile.",
+	"registryDependencies": [
+		"popover",
+		"sheet",
+		"utils"
+	],
+	"meta": {
+		"docs": {
+			"usage": "Pass an array of navigation items and optionally give an item a subroutes array. Subroutes open in a shadcn Popover on desktop and render as an easy-to-scan nested list in the mobile Sheet. Use showParentLink when a group does not have a true overview route, mobileShowDescriptions for a more compact mobile list, and popoverClass or subroutesClass to size dense menus with Tailwind. Active, disabled, external, described, and badged links are supported at both levels. Use snippets for a custom brand, desktop actions, mobile actions below the Sheet heading, and true footer content. Set forceMobile when the compact navigation should be shown regardless of viewport width. The Sheet closes automatically when a mobile link is selected.",
+			"moreExamples": [
+				{
+					"name": "actions",
+					"title": "Branding and composed actions",
+					"description": "Add a custom brand, Popover subroutes, badges, calls to action, and a nested Context Menu account control."
+				},
+				{
+					"name": "mobile",
+					"title": "Mobile behavior",
+					"description": "See how subroutes become a touch-friendly nested hierarchy inside the mobile Sheet."
+				}
+			],
+			"api": [
+				{
+					"name": "items",
+					"type": "NavbarItem[]",
+					"default": "required"
+				},
+				{
+					"name": "NavbarItem.subroutes",
+					"type": "NavbarSubroute[]",
+					"default": "—"
+				},
+				{
+					"name": "NavbarItem.showParentLink",
+					"type": "boolean",
+					"default": "true"
+				},
+				{
+					"name": "NavbarItem.popoverClass",
+					"type": "string",
+					"default": "—"
+				},
+				{
+					"name": "NavbarItem.subroutesClass",
+					"type": "string",
+					"default": "—"
+				},
+				{
+					"name": "NavbarItem.mobileShowDescriptions",
+					"type": "boolean",
+					"default": "true"
+				},
+				{
+					"name": "brand",
+					"type": "string | Snippet",
+					"default": "Brand"
+				},
+				{
+					"name": "brandHref",
+					"type": "string",
+					"default": "/"
+				},
+				{
+					"name": "breakpoint",
+					"type": "sm | md | lg | xl | 2xl",
+					"default": "md"
+				},
+				{
+					"name": "forceMobile",
+					"type": "boolean",
+					"default": "false"
+				},
+				{
+					"name": "mobileSide",
+					"type": "left | right",
+					"default": "right"
+				},
+				{
+					"name": "open",
+					"type": "boolean (bindable)",
+					"default": "false"
+				},
+				{
+					"name": "onOpenChange",
+					"type": "(open: boolean) => void",
+					"default": "—"
+				},
+				{
+					"name": "actions",
+					"type": "Snippet",
+					"default": "—"
+				},
+				{
+					"name": "mobileActions",
+					"type": "Snippet",
+					"default": "—"
+				},
+				{
+					"name": "mobileFooter",
+					"type": "Snippet",
+					"default": "—"
+				},
+				{
+					"name": "containerClass",
+					"type": "string",
+					"default": "—"
+				},
+				{
+					"name": "contentClass",
+					"type": "string",
+					"default": "—"
+				},
+				{
+					"name": "class",
+					"type": "string",
+					"default": "—"
+				}
+			]
+		}
+	},
+	"files": [
+		{
+			"content": "<script lang=\"ts\" module>\n\texport type NavbarSubroute = {\n\t\tlabel: string;\n\t\thref: string;\n\t\tdescription?: string;\n\t\tbadge?: string;\n\t\tactive?: boolean;\n\t\tdisabled?: boolean;\n\t\texternal?: boolean;\n\t};\n\n\texport type NavbarItem = NavbarSubroute & {\n\t\tsubroutes?: NavbarSubroute[];\n\t\tshowParentLink?: boolean;\n\t\tpopoverClass?: string;\n\t\tsubroutesClass?: string;\n\t\tmobileShowDescriptions?: boolean;\n\t};\n\n\texport type NavbarBreakpoint = 'sm' | 'md' | 'lg' | 'xl' | '2xl';\n\texport type NavbarMobileSide = 'left' | 'right';\n</script>\n\n<script lang=\"ts\">\n\timport type { Snippet } from 'svelte';\n\timport type { HTMLAttributes } from 'svelte/elements';\n\timport * as Popover from '$COMPONENTS$/ui/popover/index.js';\n\timport * as Sheet from '$COMPONENTS$/ui/sheet/index.js';\n\timport { cn } from '$UTILS$.js';\n\n\ttype NavbarProps = HTMLAttributes<HTMLElement> & {\n\t\titems: NavbarItem[];\n\t\tbrand?: string | Snippet;\n\t\tbrandHref?: string;\n\t\tactions?: Snippet;\n\t\tmobileActions?: Snippet;\n\t\tmobileFooter?: Snippet;\n\t\topen?: boolean;\n\t\tonOpenChange?: (open: boolean) => void;\n\t\tbreakpoint?: NavbarBreakpoint;\n\t\tforceMobile?: boolean;\n\t\tmobileSide?: NavbarMobileSide;\n\t\tmobileTitle?: string;\n\t\tmobileDescription?: string;\n\t\tariaLabel?: string;\n\t\tcontainerClass?: string;\n\t\tcontentClass?: string;\n\t\tclass?: string;\n\t};\n\n\tlet {\n\t\titems,\n\t\tbrand = 'Brand',\n\t\tbrandHref = '/',\n\t\tactions,\n\t\tmobileActions,\n\t\tmobileFooter,\n\t\topen = $bindable(false),\n\t\tonOpenChange,\n\t\tbreakpoint = 'md',\n\t\tforceMobile = false,\n\t\tmobileSide = 'right',\n\t\tmobileTitle = 'Navigation',\n\t\tmobileDescription = 'Browse the site navigation.',\n\t\tariaLabel = 'Main navigation',\n\t\tcontainerClass,\n\t\tcontentClass,\n\t\tclass: className,\n\t\t...restProps\n\t}: NavbarProps = $props();\n\n\tconst desktopVisibility: Record<NavbarBreakpoint, string> = {\n\t\tsm: 'hidden sm:flex',\n\t\tmd: 'hidden md:flex',\n\t\tlg: 'hidden lg:flex',\n\t\txl: 'hidden xl:flex',\n\t\t'2xl': 'hidden 2xl:flex'\n\t};\n\n\tconst mobileVisibility: Record<NavbarBreakpoint, string> = {\n\t\tsm: 'sm:hidden',\n\t\tmd: 'md:hidden',\n\t\tlg: 'lg:hidden',\n\t\txl: 'xl:hidden',\n\t\t'2xl': '2xl:hidden'\n\t};\n\n\tconst desktopClass = $derived(forceMobile ? 'hidden' : desktopVisibility[breakpoint]);\n\tconst mobileClass = $derived(forceMobile ? 'block' : mobileVisibility[breakpoint]);\n\n\tfunction handleOpenChange(nextOpen: boolean) {\n\t\topen = nextOpen;\n\t\tonOpenChange?.(nextOpen);\n\t}\n\n\tfunction closeMobileMenu() {\n\t\thandleOpenChange(false);\n\t}\n</script>\n\n<!-- eslint-disable svelte/no-navigation-without-resolve -- Consumer-provided URLs cannot use app-specific resolve calls. -->\n<header\n\tdata-slot=\"navbar\"\n\tclass={cn('w-full border-b border-border bg-background text-foreground', className)}\n\t{...restProps}\n>\n\t<div class={cn('mx-auto flex h-16 w-full items-center gap-6 px-4 sm:px-6', containerClass)}>\n\t\t<a\n\t\t\thref={brandHref}\n\t\t\tclass=\"inline-flex min-w-0 shrink-0 items-center font-semibold tracking-tight focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none\"\n\t\t>\n\t\t\t{#if typeof brand === 'string'}\n\t\t\t\t{brand}\n\t\t\t{:else}\n\t\t\t\t{@render brand()}\n\t\t\t{/if}\n\t\t</a>\n\n\t\t<nav aria-label={ariaLabel} class={cn('min-w-0 flex-1 items-center gap-1', desktopClass)}>\n\t\t\t{#each items as item (item.href)}\n\t\t\t\t{#if item.disabled}\n\t\t\t\t\t<span\n\t\t\t\t\t\tclass=\"cursor-not-allowed rounded-md px-3 py-2 text-sm font-medium text-muted-foreground/50\"\n\t\t\t\t\t\taria-disabled=\"true\"\n\t\t\t\t\t>\n\t\t\t\t\t\t{item.label}\n\t\t\t\t\t</span>\n\t\t\t\t{:else if item.subroutes?.length}\n\t\t\t\t\t<Popover.Root>\n\t\t\t\t\t\t<Popover.Trigger\n\t\t\t\t\t\t\tclass={cn(\n\t\t\t\t\t\t\t\t'group inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',\n\t\t\t\t\t\t\t\titem.active || item.subroutes.some((subroute) => subroute.active)\n\t\t\t\t\t\t\t\t\t? 'bg-accent text-accent-foreground'\n\t\t\t\t\t\t\t\t\t: 'text-muted-foreground'\n\t\t\t\t\t\t\t)}\n\t\t\t\t\t\t>\n\t\t\t\t\t\t\t{item.label}\n\t\t\t\t\t\t\t{#if item.badge}\n\t\t\t\t\t\t\t\t<span class=\"rounded-full bg-primary/10 px-1.5 py-0.5 text-[0.625rem] text-primary\">\n\t\t\t\t\t\t\t\t\t{item.badge}\n\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t{/if}\n\t\t\t\t\t\t\t<svg\n\t\t\t\t\t\t\t\tviewBox=\"0 0 24 24\"\n\t\t\t\t\t\t\t\tfill=\"none\"\n\t\t\t\t\t\t\t\tstroke=\"currentColor\"\n\t\t\t\t\t\t\t\tstroke-width=\"2\"\n\t\t\t\t\t\t\t\tstroke-linecap=\"round\"\n\t\t\t\t\t\t\t\tstroke-linejoin=\"round\"\n\t\t\t\t\t\t\t\taria-hidden=\"true\"\n\t\t\t\t\t\t\t\tclass=\"size-3.5 transition-transform group-data-[state=open]:rotate-180\"\n\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t<path d=\"m6 9 6 6 6-6\"></path>\n\t\t\t\t\t\t\t</svg>\n\t\t\t\t\t\t</Popover.Trigger>\n\n\t\t\t\t\t\t<Popover.Content align=\"start\" sideOffset={8} class={cn('w-80 p-2', item.popoverClass)}>\n\t\t\t\t\t\t\t{#if item.description}\n\t\t\t\t\t\t\t\t<div class=\"px-3 pt-2 pb-3\">\n\t\t\t\t\t\t\t\t\t<p class=\"font-medium text-foreground\">{item.label}</p>\n\t\t\t\t\t\t\t\t\t<p class=\"mt-1 text-xs leading-relaxed text-muted-foreground\">\n\t\t\t\t\t\t\t\t\t\t{item.description}\n\t\t\t\t\t\t\t\t\t</p>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t{/if}\n\t\t\t\t\t\t\t<div class={cn('grid gap-1', item.subroutesClass)}>\n\t\t\t\t\t\t\t\t{#if item.showParentLink !== false}\n\t\t\t\t\t\t\t\t\t<Popover.Close>\n\t\t\t\t\t\t\t\t\t\t{#snippet child({ props })}\n\t\t\t\t\t\t\t\t\t\t\t<a\n\t\t\t\t\t\t\t\t\t\t\t\t{...props}\n\t\t\t\t\t\t\t\t\t\t\t\thref={item.href}\n\t\t\t\t\t\t\t\t\t\t\t\ttarget={item.external ? '_blank' : undefined}\n\t\t\t\t\t\t\t\t\t\t\t\trel={item.external ? 'noreferrer' : undefined}\n\t\t\t\t\t\t\t\t\t\t\t\taria-current={item.active ? 'page' : undefined}\n\t\t\t\t\t\t\t\t\t\t\t\tclass=\"rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none\"\n\t\t\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t\t\t\t\tAll {item.label}\n\t\t\t\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t\t\t\t{/snippet}\n\t\t\t\t\t\t\t\t\t</Popover.Close>\n\t\t\t\t\t\t\t\t{/if}\n\t\t\t\t\t\t\t\t{#each item.subroutes as subroute (subroute.href)}\n\t\t\t\t\t\t\t\t\t{#if subroute.disabled}\n\t\t\t\t\t\t\t\t\t\t<div class=\"cursor-not-allowed rounded-md px-3 py-2 opacity-50\">\n\t\t\t\t\t\t\t\t\t\t\t<p class=\"text-sm font-medium\">{subroute.label}</p>\n\t\t\t\t\t\t\t\t\t\t\t{#if subroute.description}\n\t\t\t\t\t\t\t\t\t\t\t\t<p class=\"mt-0.5 text-xs text-muted-foreground\">{subroute.description}</p>\n\t\t\t\t\t\t\t\t\t\t\t{/if}\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t{:else}\n\t\t\t\t\t\t\t\t\t\t<Popover.Close>\n\t\t\t\t\t\t\t\t\t\t\t{#snippet child({ props })}\n\t\t\t\t\t\t\t\t\t\t\t\t<a\n\t\t\t\t\t\t\t\t\t\t\t\t\t{...props}\n\t\t\t\t\t\t\t\t\t\t\t\t\thref={subroute.href}\n\t\t\t\t\t\t\t\t\t\t\t\t\ttarget={subroute.external ? '_blank' : undefined}\n\t\t\t\t\t\t\t\t\t\t\t\t\trel={subroute.external ? 'noreferrer' : undefined}\n\t\t\t\t\t\t\t\t\t\t\t\t\taria-current={subroute.active ? 'page' : undefined}\n\t\t\t\t\t\t\t\t\t\t\t\t\tclass={cn(\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t'block rounded-md px-3 py-2 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tsubroute.active && 'bg-accent text-accent-foreground'\n\t\t\t\t\t\t\t\t\t\t\t\t\t)}\n\t\t\t\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<span class=\"flex items-center gap-2 text-sm font-medium\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t{subroute.label}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t{#if subroute.badge}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<span\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tclass=\"rounded-full bg-primary/10 px-1.5 py-0.5 text-[0.625rem] text-primary\"\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{subroute.badge}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t{/if}\n\t\t\t\t\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t\t\t\t\t\t{#if subroute.description}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<span\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tclass=\"mt-0.5 block text-xs leading-relaxed text-muted-foreground\"\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{subroute.description}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t\t\t\t\t\t{/if}\n\t\t\t\t\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t\t\t\t\t{/snippet}\n\t\t\t\t\t\t\t\t\t\t</Popover.Close>\n\t\t\t\t\t\t\t\t\t{/if}\n\t\t\t\t\t\t\t\t{/each}\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</Popover.Content>\n\t\t\t\t\t</Popover.Root>\n\t\t\t\t{:else}\n\t\t\t\t\t<a\n\t\t\t\t\t\thref={item.href}\n\t\t\t\t\t\ttarget={item.external ? '_blank' : undefined}\n\t\t\t\t\t\trel={item.external ? 'noreferrer' : undefined}\n\t\t\t\t\t\taria-current={item.active ? 'page' : undefined}\n\t\t\t\t\t\tclass={cn(\n\t\t\t\t\t\t\t'inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',\n\t\t\t\t\t\t\titem.active ? 'bg-accent text-accent-foreground' : 'text-muted-foreground'\n\t\t\t\t\t\t)}\n\t\t\t\t\t>\n\t\t\t\t\t\t{item.label}\n\t\t\t\t\t\t{#if item.badge}\n\t\t\t\t\t\t\t<span class=\"rounded-full bg-primary/10 px-1.5 py-0.5 text-[0.625rem] text-primary\">\n\t\t\t\t\t\t\t\t{item.badge}\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t{/if}\n\t\t\t\t\t</a>\n\t\t\t\t{/if}\n\t\t\t{/each}\n\t\t</nav>\n\n\t\t{#if actions}\n\t\t\t<div class={cn('ml-auto items-center gap-2', desktopClass)}>\n\t\t\t\t{@render actions()}\n\t\t\t</div>\n\t\t{/if}\n\n\t\t<div class={cn('ml-auto', mobileClass)}>\n\t\t\t<Sheet.Root bind:open onOpenChange={handleOpenChange}>\n\t\t\t\t<Sheet.Trigger\n\t\t\t\t\tclass=\"inline-flex size-10 items-center justify-center rounded-md border border-border bg-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none\"\n\t\t\t\t\taria-label=\"Open navigation menu\"\n\t\t\t\t>\n\t\t\t\t\t<svg\n\t\t\t\t\t\tviewBox=\"0 0 24 24\"\n\t\t\t\t\t\tfill=\"none\"\n\t\t\t\t\t\tstroke=\"currentColor\"\n\t\t\t\t\t\tstroke-width=\"2\"\n\t\t\t\t\t\tstroke-linecap=\"round\"\n\t\t\t\t\t\tstroke-linejoin=\"round\"\n\t\t\t\t\t\taria-hidden=\"true\"\n\t\t\t\t\t\tclass=\"size-5\"\n\t\t\t\t\t>\n\t\t\t\t\t\t<path d=\"M4 6h16M4 12h16M4 18h16\"></path>\n\t\t\t\t\t</svg>\n\t\t\t\t</Sheet.Trigger>\n\n\t\t\t\t<Sheet.Content side={mobileSide} class={cn('w-[min(22rem,85vw)] gap-0 p-0', contentClass)}>\n\t\t\t\t\t<Sheet.Header class=\"border-b border-border px-6 py-5 text-left\">\n\t\t\t\t\t\t<Sheet.Title>{mobileTitle}</Sheet.Title>\n\t\t\t\t\t\t<Sheet.Description>{mobileDescription}</Sheet.Description>\n\t\t\t\t\t</Sheet.Header>\n\n\t\t\t\t\t{#if mobileActions}\n\t\t\t\t\t\t<div class=\"border-b border-border p-4\">\n\t\t\t\t\t\t\t{@render mobileActions()}\n\t\t\t\t\t\t</div>\n\t\t\t\t\t{/if}\n\n\t\t\t\t\t<nav\n\t\t\t\t\t\taria-label={`${ariaLabel} mobile`}\n\t\t\t\t\t\tclass=\"flex flex-1 flex-col gap-1 overflow-y-auto p-4\"\n\t\t\t\t\t>\n\t\t\t\t\t\t{#each items as item (item.href)}\n\t\t\t\t\t\t\t{#if item.disabled}\n\t\t\t\t\t\t\t\t<span\n\t\t\t\t\t\t\t\t\tclass=\"cursor-not-allowed rounded-lg px-3 py-3 text-sm text-muted-foreground/50\"\n\t\t\t\t\t\t\t\t\taria-disabled=\"true\"\n\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t\t<span class=\"font-medium\">{item.label}</span>\n\t\t\t\t\t\t\t\t\t{#if item.description}\n\t\t\t\t\t\t\t\t\t\t<span class=\"mt-1 block text-xs leading-relaxed\">{item.description}</span>\n\t\t\t\t\t\t\t\t\t{/if}\n\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t{:else}\n\t\t\t\t\t\t\t\t<div class=\"grid gap-1\">\n\t\t\t\t\t\t\t\t\t{#if item.subroutes?.length && item.showParentLink === false}\n\t\t\t\t\t\t\t\t\t\t<div class=\"px-3 pt-2 pb-1\">\n\t\t\t\t\t\t\t\t\t\t\t<span\n\t\t\t\t\t\t\t\t\t\t\t\tclass=\"text-xs font-semibold tracking-wider text-muted-foreground uppercase\"\n\t\t\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t\t\t\t\t{item.label}\n\t\t\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t\t\t\t{#if item.mobileShowDescriptions !== false && item.description}\n\t\t\t\t\t\t\t\t\t\t\t\t<span class=\"mt-1 block text-xs leading-relaxed text-muted-foreground\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t{item.description}\n\t\t\t\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t\t\t\t{/if}\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t{:else}\n\t\t\t\t\t\t\t\t\t\t<a\n\t\t\t\t\t\t\t\t\t\t\thref={item.href}\n\t\t\t\t\t\t\t\t\t\t\ttarget={item.external ? '_blank' : undefined}\n\t\t\t\t\t\t\t\t\t\t\trel={item.external ? 'noreferrer' : undefined}\n\t\t\t\t\t\t\t\t\t\t\taria-current={item.active ? 'page' : undefined}\n\t\t\t\t\t\t\t\t\t\t\tonclick={closeMobileMenu}\n\t\t\t\t\t\t\t\t\t\t\tclass={cn(\n\t\t\t\t\t\t\t\t\t\t\t\t'rounded-lg px-3 py-3 text-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',\n\t\t\t\t\t\t\t\t\t\t\t\titem.active ? 'bg-accent text-accent-foreground' : 'text-foreground'\n\t\t\t\t\t\t\t\t\t\t\t)}\n\t\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t\t\t\t<span class=\"flex items-center gap-2 font-medium\">\n\t\t\t\t\t\t\t\t\t\t\t\t{item.label}\n\t\t\t\t\t\t\t\t\t\t\t\t{#if item.badge}\n\t\t\t\t\t\t\t\t\t\t\t\t\t<span\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tclass=\"rounded-full bg-primary/10 px-1.5 py-0.5 text-[0.625rem] text-primary\"\n\t\t\t\t\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t{item.badge}\n\t\t\t\t\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t\t\t\t\t{/if}\n\t\t\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t\t\t\t{#if item.mobileShowDescriptions !== false && item.description}\n\t\t\t\t\t\t\t\t\t\t\t\t<span class=\"mt-1 block text-xs leading-relaxed text-muted-foreground\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t{item.description}\n\t\t\t\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t\t\t\t{/if}\n\t\t\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t\t\t{/if}\n\n\t\t\t\t\t\t\t\t\t{#if item.subroutes?.length}\n\t\t\t\t\t\t\t\t\t\t<div\n\t\t\t\t\t\t\t\t\t\t\tclass={cn(\n\t\t\t\t\t\t\t\t\t\t\t\t'grid gap-1',\n\t\t\t\t\t\t\t\t\t\t\t\titem.showParentLink !== false && 'ml-3 border-l border-border pl-3'\n\t\t\t\t\t\t\t\t\t\t\t)}\n\t\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t\t\t\t{#each item.subroutes as subroute (subroute.href)}\n\t\t\t\t\t\t\t\t\t\t\t\t{#if subroute.disabled}\n\t\t\t\t\t\t\t\t\t\t\t\t\t<span\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tclass=\"cursor-not-allowed rounded-md px-3 py-2 text-sm text-muted-foreground/50\"\n\t\t\t\t\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t{subroute.label}\n\t\t\t\t\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t\t\t\t\t{:else}\n\t\t\t\t\t\t\t\t\t\t\t\t\t<a\n\t\t\t\t\t\t\t\t\t\t\t\t\t\thref={subroute.href}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\ttarget={subroute.external ? '_blank' : undefined}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\trel={subroute.external ? 'noreferrer' : undefined}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\taria-current={subroute.active ? 'page' : undefined}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tonclick={closeMobileMenu}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tclass={cn(\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t'rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tsubroute.active\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t? 'bg-accent text-accent-foreground'\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t: 'text-muted-foreground'\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t)}\n\t\t\t\t\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<span class=\"flex items-center gap-2 font-medium\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{subroute.label}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{#if subroute.badge}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<span\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tclass=\"rounded-full bg-primary/10 px-1.5 py-0.5 text-[0.625rem] text-primary\"\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{subroute.badge}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{/if}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t{#if item.mobileShowDescriptions !== false && subroute.description}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<span\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tclass=\"mt-1 block text-xs leading-relaxed text-muted-foreground\"\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{subroute.description}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t{/if}\n\t\t\t\t\t\t\t\t\t\t\t\t\t</a>\n\t\t\t\t\t\t\t\t\t\t\t\t{/if}\n\t\t\t\t\t\t\t\t\t\t\t{/each}\n\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t{/if}\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t{/if}\n\t\t\t\t\t\t{/each}\n\t\t\t\t\t</nav>\n\n\t\t\t\t\t{#if mobileFooter}\n\t\t\t\t\t\t<div class=\"mt-auto border-t border-border p-4\">\n\t\t\t\t\t\t\t{@render mobileFooter()}\n\t\t\t\t\t\t</div>\n\t\t\t\t\t{/if}\n\t\t\t\t</Sheet.Content>\n\t\t\t</Sheet.Root>\n\t\t</div>\n\t</div>\n</header>\n",
+			"type": "registry:ui",
+			"target": "navbar/navbar.svelte"
+		},
+		{
+			"content": "export { default as Navbar } from './navbar.svelte';\nexport type {\n\tNavbarBreakpoint,\n\tNavbarItem,\n\tNavbarMobileSide,\n\tNavbarSubroute\n} from './navbar.svelte';\n",
+			"type": "registry:ui",
+			"target": "navbar/index.ts"
+		}
+	]
+}

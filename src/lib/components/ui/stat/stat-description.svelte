@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
-	import { cw } from '$lib/utils';
+	import { cn } from '$lib/utils.js';
 
 	let {
 		children,
@@ -13,7 +13,7 @@
 <div
 	{...restProps}
 	data-slot="stat-description"
-	class={cw('col-start-1 row-start-3 text-xs text-muted-foreground', className)}
+	class={cn('col-start-1 row-start-3 text-xs text-muted-foreground', className)}
 >
 	{@render children()}
 </div>

@@ -1,7 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import { cn } from '$lib/utils';
 	import registry from '../../../registry.json';
+
+	let { class: className }: { class?: string } = $props();
 
 	type SearchItem = {
 		name: string;
@@ -78,7 +81,10 @@
 	}
 </script>
 
-<div class="relative min-w-0 flex-1 sm:mx-auto sm:max-w-sm" onfocusout={handleFocusOut}>
+<div
+	class={cn('relative min-w-0 flex-1 sm:mx-auto sm:max-w-sm', className)}
+	onfocusout={handleFocusOut}
+>
 	<label for={searchId} class="sr-only">Search components</label>
 	<svg
 		viewBox="0 0 24 24"
@@ -97,7 +103,7 @@
 		type="search"
 		value={query}
 		oninput={handleInput}
-		onfocus={() => (open = true)}
+		onclick={() => (open = true)}
 		onkeydown={handleKeydown}
 		placeholder="Search components..."
 		autocomplete="off"

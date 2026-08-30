@@ -2,7 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import { setContext } from 'svelte';
 	import type { HTMLOlAttributes } from 'svelte/elements';
-	import { cw } from '$lib/utils';
+	import { cn } from '$lib/utils.js';
 	import { STEPS_CONTEXT, type StepsDirection } from './steps-context';
 
 	let {
@@ -22,7 +22,7 @@
 	{...restProps}
 	data-slot="steps"
 	data-direction={direction}
-	class={cw(
+	class={cn(
 		'w-full',
 		{
 			'flex items-start overflow-x-auto': direction === 'horizontal',

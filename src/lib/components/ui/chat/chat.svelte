@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
-	import { cw } from '$lib/utils';
+	import { cn } from '$lib/utils.js';
 
 	let {
 		children,
@@ -12,7 +12,7 @@
 
 <div
 	data-slot="chat"
-	class={cw(
+	class={cn(
 		'flex min-h-0 flex-col overflow-hidden rounded-xl border border-border bg-background',
 		className
 	)}

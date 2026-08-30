@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { Tabs } from 'bits-ui';
 	import { Code } from '$lib/components/ui/code';
-	import { cw } from '$lib/utils';
+	import { cn } from '$lib/utils.js';
 
 	export type InstallValue = {
 		value: string;
@@ -70,7 +70,7 @@
 		value={activeValue}
 		onValueChange={select}
 		activationMode="automatic"
-		class={cw('w-full', className)}
+		class={cn('w-full', className)}
 	>
 		<Tabs.List
 			aria-label="Package manager"
@@ -96,7 +96,7 @@
 {:else}
 	<div
 		data-slot="install"
-		class={cw(
+		class={cn(
 			'rounded-lg border border-dashed border-border px-4 py-6 text-sm text-muted-foreground',
 			className
 		)}

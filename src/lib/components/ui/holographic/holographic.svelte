@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { Attachment } from 'svelte/attachments';
-	import { cw } from '$lib/utils';
+	import { cn } from '$lib/utils.js';
 
 	const defaultColors = ['#22d3ee', '#818cf8', '#e879f9', '#facc15', '#34d399'];
 
@@ -60,7 +60,7 @@
 
 <div
 	data-slot="holographic"
-	class={cw('relative isolate overflow-hidden', className)}
+	class={cn('relative isolate overflow-hidden', className)}
 	style:--holographic-gradient={gradient}
 	style:--holographic-opacity={opacity}
 >

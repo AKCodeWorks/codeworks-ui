@@ -5,7 +5,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
-	import { cw } from '$lib/utils';
+	import { cn } from '$lib/utils.js';
 
 	let {
 		children,
@@ -22,7 +22,7 @@
 	{...restProps}
 	data-slot="stats"
 	data-direction={direction}
-	class={cw(
+	class={cn(
 		'grid overflow-x-auto rounded-xl bg-card text-card-foreground',
 		{
 			'auto-cols-fr grid-flow-col divide-x divide-border': direction === 'horizontal',

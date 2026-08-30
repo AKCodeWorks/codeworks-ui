@@ -11,21 +11,12 @@
 	},
 	"items": [
 		{
-			"name": "utils",
-			"type": "registry:lib",
-			"title": "Class name utility",
-			"description": "Merges conditional Tailwind CSS classes without conflicts.",
-			"dependencies": ["clsx@^2.1.1", "tailwind-merge@^3.6.0"],
-			"registryDependencies": [],
-			"files": [{ "path": "src/lib/utils.ts", "type": "registry:lib" }]
-		},
-		{
 			"name": "aura",
 			"type": "registry:ui",
 			"title": "Aura",
 			"description": "Wraps content in an animated luminous aura with color, material, size, and speed variants.",
 			"dependencies": [],
-			"registryDependencies": ["local:utils"],
+			"registryDependencies": ["utils"],
 			"files": [
 				{ "path": "src/lib/components/ui/aura/aura.svelte", "type": "registry:ui" },
 				{ "path": "src/lib/components/ui/aura/index.ts", "type": "registry:ui" }
@@ -68,7 +59,7 @@
 			"title": "Chat",
 			"description": "A composable chat interface with aligned messages, message content, and an accessible composer.",
 			"dependencies": [],
-			"registryDependencies": ["local:utils"],
+			"registryDependencies": ["utils"],
 			"files": [
 				{ "path": "src/lib/components/ui/chat/chat.svelte", "type": "registry:ui" },
 				{
@@ -126,7 +117,7 @@
 			"title": "Code",
 			"description": "Syntax-highlighted code display with Svelte support and one-click copying.",
 			"dependencies": ["shiki@^4.4.3"],
-			"registryDependencies": ["local:utils"],
+			"registryDependencies": ["utils"],
 			"files": [
 				{ "path": "src/lib/components/ui/code/code.svelte", "type": "registry:ui" },
 				{ "path": "src/lib/components/ui/code/highlighter.ts", "type": "registry:ui" },
@@ -161,12 +152,118 @@
 			}
 		},
 		{
+			"name": "context-menu",
+			"type": "registry:ui",
+			"title": "Context Menu",
+			"description": "A composable right-click menu with nested submenus, selectable items, shortcuts, and icon-friendly actions.",
+			"dependencies": ["bits-ui@^2.19.0"],
+			"registryDependencies": ["utils"],
+			"files": [
+				{
+					"path": "src/lib/components/ui/context-menu/context-menu.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/context-menu/context-menu-trigger.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/context-menu/context-menu-content.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/context-menu/context-menu-item.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/context-menu/context-menu-checkbox-item.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/context-menu/context-menu-radio-group.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/context-menu/context-menu-radio-item.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/context-menu/context-menu-group.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/context-menu/context-menu-group-heading.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/context-menu/context-menu-label.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/context-menu/context-menu-shortcut.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/context-menu/context-menu-separator.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/context-menu/context-menu-sub.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/context-menu/context-menu-sub-trigger.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/context-menu/context-menu-sub-content.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/context-menu/context-menu-portal.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/context-menu/index.ts",
+					"type": "registry:ui"
+				}
+			],
+			"meta": {
+				"docs": {
+					"usage": "Compose Root, Trigger, Content, and Item using the ContextMenu namespace. Add Sub, SubTrigger, and SubContent for any depth of nested menu. CheckboxItem and RadioGroup provide persistent selection state through Svelte bindings. For action icons, import components from the icon library configured by shadcn and render them directly inside an Item or SubTrigger; the menu automatically sizes and aligns SVG icons.",
+					"moreExamples": [
+						{
+							"name": "nested",
+							"title": "Icons and nested submenus",
+							"description": "Compose multiple submenu levels and render tree-shakeable icon components directly inside actions."
+						},
+						{
+							"name": "selections",
+							"title": "Checkboxes and radio groups",
+							"description": "Build stateful view controls with checked items, exclusive choices, groups, and disabled actions."
+						}
+					],
+					"api": [
+						{ "name": "Root.open", "type": "boolean (bindable)", "default": "false" },
+						{ "name": "Trigger", "type": "Bits UI trigger props", "default": "—" },
+						{ "name": "Content", "type": "Bits UI content props", "default": "—" },
+						{ "name": "Item.variant", "type": "default | destructive", "default": "default" },
+						{ "name": "Item.inset", "type": "boolean", "default": "false" },
+						{ "name": "CheckboxItem.checked", "type": "boolean (bindable)", "default": "false" },
+						{ "name": "RadioGroup.value", "type": "string (bindable)", "default": "''" },
+						{ "name": "Sub.open", "type": "boolean (bindable)", "default": "false" },
+						{ "name": "class", "type": "string", "default": "—" }
+					]
+				}
+			}
+		},
+		{
 			"name": "install",
 			"type": "registry:ui",
 			"title": "Install",
 			"description": "A persistent package-manager switcher for installation commands.",
 			"dependencies": ["bits-ui@^2.19.0"],
-			"registryDependencies": ["local:utils", "local:code"],
+			"registryDependencies": ["utils", "local:code"],
 			"files": [
 				{ "path": "src/lib/components/ui/install/install.svelte", "type": "registry:ui" },
 				{ "path": "src/lib/components/ui/install/index.ts", "type": "registry:ui" }
@@ -208,7 +305,7 @@
 			"title": "Holographic",
 			"description": "Applies an animated holographic spectrum and shimmer over any content.",
 			"dependencies": [],
-			"registryDependencies": ["local:utils"],
+			"registryDependencies": ["utils"],
 			"files": [
 				{
 					"path": "src/lib/components/ui/holographic/holographic.svelte",
@@ -245,12 +342,100 @@
 			}
 		},
 		{
+			"name": "navbar",
+			"type": "registry:ui",
+			"title": "Navbar",
+			"description": "A responsive navigation bar with shadcn Popover subroutes and an automatic Sheet menu on mobile.",
+			"dependencies": [],
+			"registryDependencies": ["popover", "sheet", "utils"],
+			"files": [
+				{
+					"path": "src/lib/components/ui/navbar/navbar.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/navbar/index.ts",
+					"type": "registry:ui"
+				}
+			],
+			"meta": {
+				"docs": {
+					"usage": "Pass an array of navigation items and optionally give an item a subroutes array. Subroutes open in a shadcn Popover on desktop and render as an easy-to-scan nested list in the mobile Sheet. Use showParentLink when a group does not have a true overview route, mobileShowDescriptions for a more compact mobile list, and popoverClass or subroutesClass to size dense menus with Tailwind. Active, disabled, external, described, and badged links are supported at both levels. Use snippets for a custom brand, desktop actions, mobile actions below the Sheet heading, and true footer content. Set forceMobile when the compact navigation should be shown regardless of viewport width. The Sheet closes automatically when a mobile link is selected.",
+					"moreExamples": [
+						{
+							"name": "actions",
+							"title": "Branding and composed actions",
+							"description": "Add a custom brand, Popover subroutes, badges, calls to action, and a nested Context Menu account control."
+						},
+						{
+							"name": "mobile",
+							"title": "Mobile behavior",
+							"description": "See how subroutes become a touch-friendly nested hierarchy inside the mobile Sheet."
+						}
+					],
+					"api": [
+						{
+							"name": "items",
+							"type": "NavbarItem[]",
+							"default": "required"
+						},
+						{
+							"name": "NavbarItem.subroutes",
+							"type": "NavbarSubroute[]",
+							"default": "—"
+						},
+						{
+							"name": "NavbarItem.showParentLink",
+							"type": "boolean",
+							"default": "true"
+						},
+						{
+							"name": "NavbarItem.popoverClass",
+							"type": "string",
+							"default": "—"
+						},
+						{
+							"name": "NavbarItem.subroutesClass",
+							"type": "string",
+							"default": "—"
+						},
+						{
+							"name": "NavbarItem.mobileShowDescriptions",
+							"type": "boolean",
+							"default": "true"
+						},
+						{ "name": "brand", "type": "string | Snippet", "default": "Brand" },
+						{ "name": "brandHref", "type": "string", "default": "/" },
+						{
+							"name": "breakpoint",
+							"type": "sm | md | lg | xl | 2xl",
+							"default": "md"
+						},
+						{ "name": "forceMobile", "type": "boolean", "default": "false" },
+						{ "name": "mobileSide", "type": "left | right", "default": "right" },
+						{ "name": "open", "type": "boolean (bindable)", "default": "false" },
+						{
+							"name": "onOpenChange",
+							"type": "(open: boolean) => void",
+							"default": "—"
+						},
+						{ "name": "actions", "type": "Snippet", "default": "—" },
+						{ "name": "mobileActions", "type": "Snippet", "default": "—" },
+						{ "name": "mobileFooter", "type": "Snippet", "default": "—" },
+						{ "name": "containerClass", "type": "string", "default": "—" },
+						{ "name": "contentClass", "type": "string", "default": "—" },
+						{ "name": "class", "type": "string", "default": "—" }
+					]
+				}
+			}
+		},
+		{
 			"name": "stat",
 			"type": "registry:ui",
 			"title": "Stat",
 			"description": "Displays related numbers and supporting data in composable horizontal, vertical, or responsive blocks.",
 			"dependencies": [],
-			"registryDependencies": ["local:utils"],
+			"registryDependencies": ["utils"],
 			"files": [
 				{ "path": "src/lib/components/ui/stat/stat.svelte", "type": "registry:ui" },
 				{ "path": "src/lib/components/ui/stat/stat-item.svelte", "type": "registry:ui" },
@@ -294,7 +479,7 @@
 			"title": "Steps",
 			"description": "Shows progress through a sequence with composable steps, states, colors, and responsive orientations.",
 			"dependencies": [],
-			"registryDependencies": ["local:utils"],
+			"registryDependencies": ["utils"],
 			"files": [
 				{ "path": "src/lib/components/ui/steps/steps.svelte", "type": "registry:ui" },
 				{ "path": "src/lib/components/ui/steps/steps-item.svelte", "type": "registry:ui" },
@@ -347,7 +532,7 @@
 			"title": "Tooltip",
 			"description": "Displays concise contextual information on hover, keyboard focus, or touch-friendly tap.",
 			"dependencies": ["bits-ui@^2.19.0"],
-			"registryDependencies": ["local:utils"],
+			"registryDependencies": ["utils"],
 			"files": [
 				{ "path": "src/lib/components/ui/tooltip/tooltip.svelte", "type": "registry:ui" },
 				{ "path": "src/lib/components/ui/tooltip/index.ts", "type": "registry:ui" }

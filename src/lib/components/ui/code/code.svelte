@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cw } from '$lib/utils';
+	import { cn } from '$lib/utils.js';
 	import { highlightCode, type CodeLanguage } from './highlighter';
 
 	let {
@@ -28,7 +28,7 @@
 
 <div
 	data-slot="code"
-	class={cw(
+	class={cn(
 		'overflow-hidden rounded-lg border border-zinc-800 bg-zinc-950 text-zinc-100',
 		className
 	)}

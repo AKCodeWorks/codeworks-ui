@@ -5,7 +5,7 @@
 	"type": "registry:ui",
 	"description": "Displays related numbers and supporting data in composable horizontal, vertical, or responsive blocks.",
 	"registryDependencies": [
-		"./utils.json"
+		"utils"
 	],
 	"meta": {
 		"docs": {
@@ -43,37 +43,37 @@
 	},
 	"files": [
 		{
-			"content": "<script lang=\"ts\" module>\n\texport type StatDirection = 'horizontal' | 'vertical' | 'responsive';\n</script>\n\n<script lang=\"ts\">\n\timport type { Snippet } from 'svelte';\n\timport type { HTMLAttributes } from 'svelte/elements';\n\timport { cw } from '$UTILS$';\n\n\tlet {\n\t\tchildren,\n\t\tdirection = 'horizontal',\n\t\tclass: className,\n\t\t...restProps\n\t}: HTMLAttributes<HTMLDivElement> & {\n\t\tchildren: Snippet;\n\t\tdirection?: StatDirection;\n\t} = $props();\n</script>\n\n<div\n\t{...restProps}\n\tdata-slot=\"stats\"\n\tdata-direction={direction}\n\tclass={cw(\n\t\t'grid overflow-x-auto rounded-xl bg-card text-card-foreground',\n\t\t{\n\t\t\t'auto-cols-fr grid-flow-col divide-x divide-border': direction === 'horizontal',\n\t\t\t'grid-flow-row divide-y divide-border': direction === 'vertical',\n\t\t\t'grid-flow-row divide-y divide-border sm:auto-cols-fr sm:grid-flow-col sm:divide-x sm:divide-y-0':\n\t\t\t\tdirection === 'responsive'\n\t\t},\n\t\tclassName\n\t)}\n>\n\t{@render children()}\n</div>\n",
+			"content": "<script lang=\"ts\" module>\n\texport type StatDirection = 'horizontal' | 'vertical' | 'responsive';\n</script>\n\n<script lang=\"ts\">\n\timport type { Snippet } from 'svelte';\n\timport type { HTMLAttributes } from 'svelte/elements';\n\timport { cn } from '$UTILS$.js';\n\n\tlet {\n\t\tchildren,\n\t\tdirection = 'horizontal',\n\t\tclass: className,\n\t\t...restProps\n\t}: HTMLAttributes<HTMLDivElement> & {\n\t\tchildren: Snippet;\n\t\tdirection?: StatDirection;\n\t} = $props();\n</script>\n\n<div\n\t{...restProps}\n\tdata-slot=\"stats\"\n\tdata-direction={direction}\n\tclass={cn(\n\t\t'grid overflow-x-auto rounded-xl bg-card text-card-foreground',\n\t\t{\n\t\t\t'auto-cols-fr grid-flow-col divide-x divide-border': direction === 'horizontal',\n\t\t\t'grid-flow-row divide-y divide-border': direction === 'vertical',\n\t\t\t'grid-flow-row divide-y divide-border sm:auto-cols-fr sm:grid-flow-col sm:divide-x sm:divide-y-0':\n\t\t\t\tdirection === 'responsive'\n\t\t},\n\t\tclassName\n\t)}\n>\n\t{@render children()}\n</div>\n",
 			"type": "registry:ui",
 			"target": "stat/stat.svelte"
 		},
 		{
-			"content": "<script lang=\"ts\">\n\timport type { Snippet } from 'svelte';\n\timport type { HTMLAttributes } from 'svelte/elements';\n\timport { cw } from '$UTILS$';\n\n\tlet {\n\t\tchildren,\n\t\tclass: className,\n\t\t...restProps\n\t}: HTMLAttributes<HTMLDivElement> & { children: Snippet } = $props();\n</script>\n\n<div\n\t{...restProps}\n\tdata-slot=\"stat\"\n\tclass={cw(\n\t\t'grid min-w-56 grid-cols-[minmax(0,1fr)_auto] grid-rows-[auto_auto_auto] gap-x-4 px-6 py-5',\n\t\tclassName\n\t)}\n>\n\t{@render children()}\n</div>\n",
+			"content": "<script lang=\"ts\">\n\timport type { Snippet } from 'svelte';\n\timport type { HTMLAttributes } from 'svelte/elements';\n\timport { cn } from '$UTILS$.js';\n\n\tlet {\n\t\tchildren,\n\t\tclass: className,\n\t\t...restProps\n\t}: HTMLAttributes<HTMLDivElement> & { children: Snippet } = $props();\n</script>\n\n<div\n\t{...restProps}\n\tdata-slot=\"stat\"\n\tclass={cn(\n\t\t'grid min-w-56 grid-cols-[minmax(0,1fr)_auto] grid-rows-[auto_auto_auto] gap-x-4 px-6 py-5',\n\t\tclassName\n\t)}\n>\n\t{@render children()}\n</div>\n",
 			"type": "registry:ui",
 			"target": "stat/stat-item.svelte"
 		},
 		{
-			"content": "<script lang=\"ts\">\n\timport type { Snippet } from 'svelte';\n\timport type { HTMLAttributes } from 'svelte/elements';\n\timport { cw } from '$UTILS$';\n\n\tlet {\n\t\tchildren,\n\t\tclass: className,\n\t\t...restProps\n\t}: HTMLAttributes<HTMLDivElement> & { children: Snippet } = $props();\n</script>\n\n<div\n\t{...restProps}\n\tdata-slot=\"stat-title\"\n\tclass={cw('col-start-1 row-start-1 text-sm text-muted-foreground', className)}\n>\n\t{@render children()}\n</div>\n",
+			"content": "<script lang=\"ts\">\n\timport type { Snippet } from 'svelte';\n\timport type { HTMLAttributes } from 'svelte/elements';\n\timport { cn } from '$UTILS$.js';\n\n\tlet {\n\t\tchildren,\n\t\tclass: className,\n\t\t...restProps\n\t}: HTMLAttributes<HTMLDivElement> & { children: Snippet } = $props();\n</script>\n\n<div\n\t{...restProps}\n\tdata-slot=\"stat-title\"\n\tclass={cn('col-start-1 row-start-1 text-sm text-muted-foreground', className)}\n>\n\t{@render children()}\n</div>\n",
 			"type": "registry:ui",
 			"target": "stat/stat-title.svelte"
 		},
 		{
-			"content": "<script lang=\"ts\">\n\timport type { Snippet } from 'svelte';\n\timport type { HTMLAttributes } from 'svelte/elements';\n\timport { cw } from '$UTILS$';\n\n\tlet {\n\t\tchildren,\n\t\tclass: className,\n\t\t...restProps\n\t}: HTMLAttributes<HTMLDivElement> & { children: Snippet } = $props();\n</script>\n\n<div\n\t{...restProps}\n\tdata-slot=\"stat-value\"\n\tclass={cw('col-start-1 row-start-2 text-3xl font-bold tracking-tight', className)}\n>\n\t{@render children()}\n</div>\n",
+			"content": "<script lang=\"ts\">\n\timport type { Snippet } from 'svelte';\n\timport type { HTMLAttributes } from 'svelte/elements';\n\timport { cn } from '$UTILS$.js';\n\n\tlet {\n\t\tchildren,\n\t\tclass: className,\n\t\t...restProps\n\t}: HTMLAttributes<HTMLDivElement> & { children: Snippet } = $props();\n</script>\n\n<div\n\t{...restProps}\n\tdata-slot=\"stat-value\"\n\tclass={cn('col-start-1 row-start-2 text-3xl font-bold tracking-tight', className)}\n>\n\t{@render children()}\n</div>\n",
 			"type": "registry:ui",
 			"target": "stat/stat-value.svelte"
 		},
 		{
-			"content": "<script lang=\"ts\">\n\timport type { Snippet } from 'svelte';\n\timport type { HTMLAttributes } from 'svelte/elements';\n\timport { cw } from '$UTILS$';\n\n\tlet {\n\t\tchildren,\n\t\tclass: className,\n\t\t...restProps\n\t}: HTMLAttributes<HTMLDivElement> & { children: Snippet } = $props();\n</script>\n\n<div\n\t{...restProps}\n\tdata-slot=\"stat-description\"\n\tclass={cw('col-start-1 row-start-3 text-xs text-muted-foreground', className)}\n>\n\t{@render children()}\n</div>\n",
+			"content": "<script lang=\"ts\">\n\timport type { Snippet } from 'svelte';\n\timport type { HTMLAttributes } from 'svelte/elements';\n\timport { cn } from '$UTILS$.js';\n\n\tlet {\n\t\tchildren,\n\t\tclass: className,\n\t\t...restProps\n\t}: HTMLAttributes<HTMLDivElement> & { children: Snippet } = $props();\n</script>\n\n<div\n\t{...restProps}\n\tdata-slot=\"stat-description\"\n\tclass={cn('col-start-1 row-start-3 text-xs text-muted-foreground', className)}\n>\n\t{@render children()}\n</div>\n",
 			"type": "registry:ui",
 			"target": "stat/stat-description.svelte"
 		},
 		{
-			"content": "<script lang=\"ts\">\n\timport type { Snippet } from 'svelte';\n\timport type { HTMLAttributes } from 'svelte/elements';\n\timport { cw } from '$UTILS$';\n\n\tlet {\n\t\tchildren,\n\t\tclass: className,\n\t\t...restProps\n\t}: HTMLAttributes<HTMLDivElement> & { children: Snippet } = $props();\n</script>\n\n<div\n\t{...restProps}\n\tdata-slot=\"stat-figure\"\n\tclass={cw('col-start-2 row-start-1 row-end-4 place-self-start', className)}\n>\n\t{@render children()}\n</div>\n",
+			"content": "<script lang=\"ts\">\n\timport type { Snippet } from 'svelte';\n\timport type { HTMLAttributes } from 'svelte/elements';\n\timport { cn } from '$UTILS$.js';\n\n\tlet {\n\t\tchildren,\n\t\tclass: className,\n\t\t...restProps\n\t}: HTMLAttributes<HTMLDivElement> & { children: Snippet } = $props();\n</script>\n\n<div\n\t{...restProps}\n\tdata-slot=\"stat-figure\"\n\tclass={cn('col-start-2 row-start-1 row-end-4 place-self-start', className)}\n>\n\t{@render children()}\n</div>\n",
 			"type": "registry:ui",
 			"target": "stat/stat-figure.svelte"
 		},
 		{
-			"content": "<script lang=\"ts\">\n\timport type { Snippet } from 'svelte';\n\timport type { HTMLAttributes } from 'svelte/elements';\n\timport { cw } from '$UTILS$';\n\n\tlet {\n\t\tchildren,\n\t\tclass: className,\n\t\t...restProps\n\t}: HTMLAttributes<HTMLDivElement> & { children: Snippet } = $props();\n</script>\n\n<div\n\t{...restProps}\n\tdata-slot=\"stat-actions\"\n\tclass={cw('col-start-2 row-start-3 flex items-end justify-end gap-2 self-end', className)}\n>\n\t{@render children()}\n</div>\n",
+			"content": "<script lang=\"ts\">\n\timport type { Snippet } from 'svelte';\n\timport type { HTMLAttributes } from 'svelte/elements';\n\timport { cn } from '$UTILS$.js';\n\n\tlet {\n\t\tchildren,\n\t\tclass: className,\n\t\t...restProps\n\t}: HTMLAttributes<HTMLDivElement> & { children: Snippet } = $props();\n</script>\n\n<div\n\t{...restProps}\n\tdata-slot=\"stat-actions\"\n\tclass={cn('col-start-2 row-start-3 flex items-end justify-end gap-2 self-end', className)}\n>\n\t{@render children()}\n</div>\n",
 			"type": "registry:ui",
 			"target": "stat/stat-actions.svelte"
 		},

@@ -8,7 +8,7 @@
 	import type { Snippet } from 'svelte';
 	import { getContext } from 'svelte';
 	import type { HTMLLiAttributes } from 'svelte/elements';
-	import { cw } from '$lib/utils';
+	import { cn } from '$lib/utils.js';
 	import { STEPS_CONTEXT, type StepsDirection } from './steps-context';
 
 	type Props = HTMLLiAttributes & {
@@ -75,7 +75,7 @@
 	data-state={state}
 	data-variant={variant}
 	aria-current={ariaCurrent ?? (state === 'current' ? 'step' : undefined)}
-	class={cw(
+	class={cn(
 		'relative grid list-none before:absolute before:z-0 before:bg-border after:absolute after:z-0 after:bg-border',
 		{
 			'min-w-28 flex-1 grid-rows-[2rem_auto] justify-items-center gap-y-2 px-2 text-center before:top-[0.9375rem] before:left-0 before:h-0.5 before:w-1/2 after:top-[0.9375rem] after:right-0 after:h-0.5 after:w-1/2 first:before:hidden last:after:hidden':
@@ -92,7 +92,7 @@
 >
 	<span
 		data-slot="step-indicator"
-		class={cw(
+		class={cn(
 			'relative z-10 col-start-1 row-start-1 inline-flex size-8 items-center justify-center rounded-full border-2 text-xs font-semibold',
 			state === 'pending'
 				? 'border-border bg-background text-muted-foreground'
@@ -114,7 +114,7 @@
 
 	<span
 		data-slot="step-label"
-		class={cw(
+		class={cn(
 			'col-start-2 row-start-1 pt-1.5 text-sm sm:col-start-auto',
 			state === 'pending' ? 'text-muted-foreground' : 'font-medium text-foreground',
 			(direction === 'horizontal' || direction === 'responsive') &&

@@ -6,7 +6,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { Tooltip as TooltipPrimitive } from 'bits-ui';
-	import { cw } from '$lib/utils';
+	import { cn } from '$lib/utils.js';
 
 	type TooltipProps = {
 		children: Snippet;
@@ -65,7 +65,7 @@
 				<span
 					{...props}
 					onpointerdown={handlePointerDown}
-					class={cw(
+					class={cn(
 						'inline-flex max-w-full touch-manipulation rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none',
 						className
 					)}
@@ -82,7 +82,7 @@
 				{sideOffset}
 				collisionPadding={12}
 				sticky="always"
-				class={cw(
+				class={cn(
 					'z-50 max-w-[min(20rem,calc(100vw-2rem))] rounded-md bg-foreground px-3 py-1.5 text-xs leading-relaxed text-background shadow-md outline-none',
 					contentClass
 				)}

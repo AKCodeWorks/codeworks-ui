@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
-	import { cw } from '$lib/utils';
+	import { cn } from '$lib/utils.js';
 
 	let {
 		children,
@@ -13,7 +13,7 @@
 <div
 	{...restProps}
 	data-slot="stat"
-	class={cw(
+	class={cn(
 		'grid min-w-56 grid-cols-[minmax(0,1fr)_auto] grid-rows-[auto_auto_auto] gap-x-4 px-6 py-5',
 		className
 	)}

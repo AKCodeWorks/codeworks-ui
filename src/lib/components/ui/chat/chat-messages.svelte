@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { HTMLAttributes } from 'svelte/elements';
-	import { cw } from '$lib/utils';
+	import { cn } from '$lib/utils.js';
 
 	let {
 		children,
@@ -18,7 +18,7 @@
 	{role}
 	aria-live={ariaLive}
 	aria-relevant={ariaRelevant}
-	class={cw('flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-4', className)}
+	class={cn('flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-4', className)}
 	{...restProps}
 >
 	{@render children()}

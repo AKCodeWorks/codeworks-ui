@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import { cw } from '$lib/utils';
+	import { cn } from '$lib/utils.js';
 
 	export type AuraVariant = 'default' | 'dual' | 'rainbow' | 'holo' | 'glow' | 'gold' | 'silver';
 	export type AuraSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -11,7 +11,7 @@
 		size?: AuraSize;
 		class?: import('clsx').ClassValue;
 	} = {}) =>
-		cw(
+		cn(
 			"relative isolate inline-block bg-[image:var(--aura-gradient)] text-violet-500 before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-[inherit] before:bg-[image:var(--aura-gradient)] before:opacity-60 before:blur-sm before:content-[''] after:pointer-events-none after:absolute after:inset-0 after:-z-20 after:rounded-[inherit] after:bg-[image:var(--aura-gradient)] after:opacity-35 after:blur-xl after:content-[''] [&>*]:relative [&>*]:z-10",
 			{
 				'p-0': size === 'xs',
