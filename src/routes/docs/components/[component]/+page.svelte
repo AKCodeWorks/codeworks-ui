@@ -11,6 +11,7 @@
 	const Demo = $derived(component.demo);
 	const registryUrl = $derived(new URL(`/r/${component.name}.json`, page.url.origin).href);
 	const installScript = $derived(`shadcn-svelte@latest add ${registryUrl}`);
+	const hasApiDescriptions = $derived(component.api.some((property) => property.description));
 </script>
 
 <svelte:head>
@@ -135,13 +136,15 @@
 		{#if component.api.length}
 			<section class="pt-12" aria-labelledby="api-title">
 				<h2 id="api-title" class="text-2xl font-semibold tracking-tight">API reference</h2>
-				<div class="mt-5 overflow-hidden rounded-lg border border-border">
+				<div class="mt-5 overflow-x-auto rounded-lg border border-border">
 					<table class="w-full text-left text-sm">
 						<thead class="bg-muted/70 text-muted-foreground"
 							><tr
 								><th class="px-4 py-3 font-medium">Prop</th><th class="px-4 py-3 font-medium"
 									>Type</th
-								><th class="px-4 py-3 font-medium">Default</th></tr
+								><th class="px-4 py-3 font-medium">Default</th>{#if hasApiDescriptions}<th
+										class="px-4 py-3 font-medium">Description</th
+									>{/if}</tr
 							></thead
 						>
 						<tbody class="divide-y divide-border">
@@ -151,7 +154,10 @@
 										class="px-4 py-3 font-mono text-xs text-muted-foreground">{property.type}</td
 									><td class="px-4 py-3 font-mono text-xs text-muted-foreground"
 										>{property.default}</td
-									></tr
+									>{#if hasApiDescriptions}<td
+											class="min-w-64 px-4 py-3 text-xs leading-relaxed text-muted-foreground"
+											>{property.description ?? '—'}</td
+										>{/if}</tr
 								>
 							{/each}
 						</tbody>

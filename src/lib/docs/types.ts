@@ -1,7 +1,7 @@
 import type { Component } from 'svelte';
 import type { InstallValue } from '$lib/components/ui/install';
 
-export type ApiProperty = { name: string; type: string; default: string };
+export type ApiProperty = { name: string; type: string; default: string; description?: string };
 
 export type ComponentExample = {
 	name: string;

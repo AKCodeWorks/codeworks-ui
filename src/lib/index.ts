@@ -8,6 +8,14 @@ export * as ContextMenu from './components/ui/context-menu';
 export { Install } from './components/ui/install';
 export type { InstallValue } from './components/ui/install';
 export { Holographic } from './components/ui/holographic';
+export { MentionInput } from './components/ui/mention-input';
+export type {
+	MentionAction,
+	MentionEmptyContext,
+	MentionEvent,
+	MentionItem,
+	MentionSuggestionContext
+} from './components/ui/mention-input';
 export { Navbar } from './components/ui/navbar';
 export type {
 	NavbarBreakpoint,

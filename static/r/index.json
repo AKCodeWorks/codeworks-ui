@@ -363,6 +363,183 @@
 		"relativeUrl": "holographic.json"
 	},
 	{
+		"name": "mention-input",
+		"title": "Mention Input",
+		"type": "registry:ui",
+		"description": "A customizable mention-aware textarea with keyboard suggestions, multiple triggers, and application-defined mention actions.",
+		"dependencies": [],
+		"registryDependencies": [
+			"utils"
+		],
+		"meta": {
+			"docs": {
+				"usage": "Pass MentionItem objects and bind value for a controlled textarea. Type a configured trigger to open suggestions, then use the pointer, arrow keys, Enter, or Tab to insert a mention. Each item can define its own onMention action, while the component-level onMention observes every selection. Use onSearch to load remote results, filter to replace local matching, formatMention to control inserted text, and the suggestion and empty snippets plus Tailwind class props to own the presentation.",
+				"moreExamples": [
+					{
+						"name": "custom",
+						"title": "Custom styling and actions",
+						"description": "Render rich suggestions, search keywords, customize every layer with Tailwind, and run an item-specific action after insertion."
+					},
+					{
+						"name": "triggers",
+						"title": "People and channels",
+						"description": "Use multiple trigger characters, customize inserted text, and respond to every selected mention."
+					},
+					{
+						"name": "event",
+						"title": "Mention event payload",
+						"description": "Select a mention and inspect every field delivered to global and item-specific callbacks."
+					}
+				],
+				"api": [
+					{
+						"name": "items",
+						"type": "MentionItem[]",
+						"default": "required"
+					},
+					{
+						"name": "value",
+						"type": "string (bindable)",
+						"default": "''"
+					},
+					{
+						"name": "onValueChange",
+						"type": "(value: string) => void",
+						"default": "—"
+					},
+					{
+						"name": "onMention",
+						"type": "(event: MentionEvent) => void | Promise<void>",
+						"default": "—"
+					},
+					{
+						"name": "MentionItem.onMention",
+						"type": "(event: MentionEvent) => void | Promise<void>",
+						"default": "—"
+					},
+					{
+						"name": "MentionEvent.item",
+						"type": "MentionItem",
+						"default": "—",
+						"description": "The complete selected item, including its id, label, optional data, and item-specific action."
+					},
+					{
+						"name": "MentionEvent.trigger",
+						"type": "string",
+						"default": "—",
+						"description": "The trigger that opened the suggestions, such as @ or #."
+					},
+					{
+						"name": "MentionEvent.query",
+						"type": "string",
+						"default": "—",
+						"description": "The text typed after the trigger and before selecting the suggestion."
+					},
+					{
+						"name": "MentionEvent.start",
+						"type": "number",
+						"default": "—",
+						"description": "The starting character index of the trigger in the value before insertion."
+					},
+					{
+						"name": "MentionEvent.end",
+						"type": "number",
+						"default": "—",
+						"description": "The ending character index of the query in the value before insertion."
+					},
+					{
+						"name": "MentionEvent.mention",
+						"type": "string",
+						"default": "—",
+						"description": "The exact formatted mention inserted into the textarea."
+					},
+					{
+						"name": "MentionEvent.value",
+						"type": "string",
+						"default": "—",
+						"description": "The complete textarea value immediately after insertion."
+					},
+					{
+						"name": "onSearch",
+						"type": "(query: string, trigger: string) => void | Promise<void>",
+						"default": "—"
+					},
+					{
+						"name": "filter",
+						"type": "(item, query, trigger) => boolean",
+						"default": "label, value, and keywords"
+					},
+					{
+						"name": "formatMention",
+						"type": "(item, trigger) => string",
+						"default": "trigger + item value or label"
+					},
+					{
+						"name": "triggers",
+						"type": "string[]",
+						"default": "['@']"
+					},
+					{
+						"name": "minQueryLength",
+						"type": "number",
+						"default": "0"
+					},
+					{
+						"name": "maxSuggestions",
+						"type": "number",
+						"default": "8"
+					},
+					{
+						"name": "allowSpaces",
+						"type": "boolean",
+						"default": "false"
+					},
+					{
+						"name": "open",
+						"type": "boolean (bindable)",
+						"default": "false"
+					},
+					{
+						"name": "suggestion",
+						"type": "Snippet",
+						"default": "—"
+					},
+					{
+						"name": "empty",
+						"type": "Snippet",
+						"default": "—"
+					},
+					{
+						"name": "class",
+						"type": "string",
+						"default": "—"
+					},
+					{
+						"name": "inputClass",
+						"type": "string",
+						"default": "—"
+					},
+					{
+						"name": "menuClass",
+						"type": "string",
+						"default": "—"
+					},
+					{
+						"name": "itemClass",
+						"type": "string",
+						"default": "—"
+					},
+					{
+						"name": "emptyClass",
+						"type": "string",
+						"default": "—"
+					}
+				]
+			}
+		},
+		"relativeUrl": "mention-input.json"
+	},
+	{
 		"name": "navbar",
 		"title": "Navbar",
 		"type": "registry:ui",
