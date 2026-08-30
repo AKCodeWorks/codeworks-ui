@@ -6,8 +6,9 @@
 	import { ModeWatcher, toggleMode } from 'mode-watcher';
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.png';
+	import { NavigationProgress } from '$lib/components/ui/navigation-progress';
 	import { Navbar, type NavbarItem } from '$lib/components/ui/navbar';
-	import { components } from '$lib/docs/catalog';
+	import { components } from '$lib/docs/component-metadata';
 	import ComponentSearch from '$lib/docs/component-search.svelte';
 
 	let { data, children }: { data: LayoutData; children: Snippet } = $props();
@@ -125,6 +126,7 @@
 {/snippet}
 
 <div class="min-h-screen bg-background font-sans text-foreground antialiased">
+	<NavigationProgress minDisplayTime={400} />
 	<Navbar
 		items={navigationItems}
 		{brand}

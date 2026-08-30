@@ -39,7 +39,9 @@
 				<p class="mt-1 text-sm text-muted-foreground">
 					{itemCount} items{archived ? ' · Archived' : ''}{inTrash ? ' · In trash' : ''}
 				</p>
-				<p class="mt-3 text-xs text-muted-foreground">Right-click this folder</p>
+				<p class="mt-3 text-xs text-muted-foreground">
+					Right-click on desktop or long-press on mobile
+				</p>
 			</div>
 		</ContextMenu.Trigger>
 

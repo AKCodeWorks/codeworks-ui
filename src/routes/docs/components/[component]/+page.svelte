@@ -13,7 +13,6 @@
 	const Demo = $derived(component.demo);
 	const registryUrl = $derived(new URL(`/r/${component.name}.json`, page.url.origin).href);
 	const installScript = $derived(`shadcn-svelte@latest add ${registryUrl}`);
-	const hasApiDescriptions = $derived(component.api.some((property) => property.description));
 </script>
 
 <svelte:head>
@@ -154,7 +153,25 @@
 
 		<section class="pt-12" aria-labelledby="usage-title">
 			<h2 id="usage-title" class="text-2xl font-semibold tracking-tight">Usage</h2>
-			<p class="mt-3 text-muted-foreground">{component.usage}</p>
+			{#if component.usage.length === 1}
+				<p class="mt-3 max-w-3xl leading-7 text-muted-foreground">{component.usage[0]}</p>
+			{:else}
+				<ul class="mt-5 grid max-w-3xl gap-3">
+					{#each component.usage as instruction, index (instruction)}
+						<li
+							class="flex gap-3 rounded-lg border border-border/70 bg-muted/30 px-4 py-3.5 leading-7 text-muted-foreground"
+						>
+							<span
+								class="mt-1 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary"
+								aria-hidden="true"
+							>
+								{index + 1}
+							</span>
+							<span>{instruction}</span>
+						</li>
+					{/each}
+				</ul>
+			{/if}
 		</section>
 
 		{#if component.api.length}
@@ -166,9 +183,9 @@
 							><tr
 								><th class="px-4 py-3 font-medium">Prop</th><th class="px-4 py-3 font-medium"
 									>Type</th
-								><th class="px-4 py-3 font-medium">Default</th>{#if hasApiDescriptions}<th
-										class="px-4 py-3 font-medium">Description</th
-									>{/if}</tr
+								><th class="px-4 py-3 font-medium">Default</th><th class="px-4 py-3 font-medium"
+									>Description</th
+								></tr
 							></thead
 						>
 						<tbody class="divide-y divide-border">
@@ -178,10 +195,9 @@
 										class="px-4 py-3 font-mono text-xs text-muted-foreground">{property.type}</td
 									><td class="px-4 py-3 font-mono text-xs text-muted-foreground"
 										>{property.default}</td
-									>{#if hasApiDescriptions}<td
-											class="min-w-64 px-4 py-3 text-xs leading-relaxed text-muted-foreground"
-											>{property.description ?? '—'}</td
-										>{/if}</tr
+									><td class="min-w-64 px-4 py-3 text-xs leading-relaxed text-muted-foreground"
+										>{property.description}</td
+									></tr
 								>
 							{/each}
 						</tbody>

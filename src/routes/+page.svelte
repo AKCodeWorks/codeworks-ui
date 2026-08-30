@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { components } from '$lib/docs/catalog';
+	import { components } from '$lib/docs/component-metadata';
 	import { resolve } from '$app/paths';
 </script>
 

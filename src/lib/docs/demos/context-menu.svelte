@@ -6,7 +6,7 @@
 	<ContextMenu.Trigger
 		class="flex h-40 w-full max-w-sm items-center justify-center rounded-lg border border-dashed border-border bg-muted/30 text-sm text-muted-foreground select-none"
 	>
-		Right-click here
+		Right-click on desktop or long-press on mobile
 	</ContextMenu.Trigger>
 	<ContextMenu.Content class="w-52">
 		<ContextMenu.Item>Open</ContextMenu.Item>

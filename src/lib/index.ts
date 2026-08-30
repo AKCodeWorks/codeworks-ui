@@ -19,6 +19,12 @@ export type {
 export { Install } from './components/ui/install';
 export type { InstallValue } from './components/ui/install';
 export { Holographic } from './components/ui/holographic';
+export { NavigationProgress } from './components/ui/navigation-progress';
+export type {
+	NavigationProgressPosition,
+	NavigationProgressProps,
+	NavigationProgressWaitFor
+} from './components/ui/navigation-progress';
 export { MentionInput } from './components/ui/mention-input';
 export type {
 	MentionAction,

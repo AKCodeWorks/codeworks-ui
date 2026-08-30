@@ -155,7 +155,7 @@
 			"name": "context-menu",
 			"type": "registry:ui",
 			"title": "Context Menu",
-			"description": "A composable right-click menu with nested submenus, selectable items, shortcuts, and icon-friendly actions.",
+			"description": "A composable context menu opened by right-clicking on desktop or long-pressing on mobile, with nested submenus, selectable items, shortcuts, and icon-friendly actions.",
 			"dependencies": ["bits-ui@^2.19.0"],
 			"registryDependencies": ["utils"],
 			"files": [
@@ -230,7 +230,7 @@
 			],
 			"meta": {
 				"docs": {
-					"usage": "Compose Root, Trigger, Content, and Item using the ContextMenu namespace. Add Sub, SubTrigger, and SubContent for any depth of nested menu. CheckboxItem and RadioGroup provide persistent selection state through Svelte bindings. For action icons, import components from the icon library configured by shadcn and render them directly inside an Item or SubTrigger; the menu automatically sizes and aligns SVG icons.",
+					"usage": "Compose Root, Trigger, Content, and Item using the ContextMenu namespace. Tell users to right-click the trigger on desktop or long-press it on mobile. Add Sub, SubTrigger, and SubContent for any depth of nested menu. CheckboxItem and RadioGroup provide persistent selection state through Svelte bindings. For action icons, import components from the icon library configured by shadcn and render them directly inside an Item or SubTrigger; the menu automatically sizes and aligns SVG icons.",
 					"moreExamples": [
 						{
 							"name": "nested",
@@ -471,6 +471,93 @@
 						{ "name": "duration", "type": "number (milliseconds)", "default": "5000" },
 						{ "name": "class", "type": "string", "default": "—" },
 						{ "name": "children", "type": "Snippet", "default": "required" }
+					]
+				}
+			}
+		},
+		{
+			"name": "navigation-progress",
+			"type": "registry:ui",
+			"title": "Navigation Progress",
+			"description": "A lifecycle-aware progress bar for SvelteKit navigation with top and bottom placement.",
+			"dependencies": [],
+			"registryDependencies": ["utils"],
+			"files": [
+				{
+					"path": "src/lib/components/ui/navigation-progress/navigation-progress.svelte",
+					"type": "registry:ui"
+				},
+				{
+					"path": "src/lib/components/ui/navigation-progress/index.ts",
+					"type": "registry:ui"
+				}
+			],
+			"meta": {
+				"docs": {
+					"usage": [
+						"Mount NavigationProgress once in src/routes/+layout.svelte so it remains active across page changes.",
+						"Navigation and top-level streamed promises returned from load are tracked automatically.",
+						"Use waitFor for remote queries or other async work. For SSE, resolve it after the first meaningful event—the maxWaitTime safety limit prevents a stalled stream from holding the bar forever."
+					],
+					"moreExamples": [
+						{
+							"name": "bottom",
+							"title": "Bottom placement",
+							"description": "Place the progress indicator along the bottom edge of the viewport or a contained application shell."
+						},
+						{
+							"name": "customization",
+							"title": "Controlled and customized",
+							"description": "Control progress directly and customize its thickness and CSS color for non-navigation work."
+						}
+					],
+					"api": [
+						{ "name": "position", "type": "top | bottom", "default": "top" },
+						{ "name": "maxProgress", "type": "number (1–99)", "default": "90" },
+						{ "name": "initialProgress", "type": "number", "default": "8" },
+						{ "name": "trickleInterval", "type": "number (milliseconds)", "default": "250" },
+						{ "name": "transitionDuration", "type": "number (milliseconds)", "default": "200" },
+						{ "name": "completionDelay", "type": "number (milliseconds)", "default": "180" },
+						{
+							"name": "minDisplayTime",
+							"type": "number (milliseconds)",
+							"default": "0",
+							"description": "Minimum time the bar remains visible, including fast navigations."
+						},
+						{
+							"name": "waitFor",
+							"type": "PromiseLike | () => PromiseLike",
+							"default": "—",
+							"description": "Additional promise to await before completing, such as a remote query or the first SSE event."
+						},
+						{
+							"name": "maxWaitTime",
+							"type": "number (milliseconds)",
+							"default": "30000",
+							"description": "Safety timeout for streamed or explicit async work. Set to 0 to disable it."
+						},
+						{ "name": "height", "type": "number (pixels)", "default": "3" },
+						{ "name": "color", "type": "CSS color", "default": "shadcn primary" },
+						{ "name": "zIndex", "type": "number", "default": "9999" },
+						{
+							"name": "trackNavigation",
+							"type": "boolean",
+							"default": "true",
+							"description": "Starts and completes from SvelteKit's client-side navigation lifecycle."
+						},
+						{
+							"name": "trackPageData",
+							"type": "boolean",
+							"default": "true",
+							"description": "Waits for top-level promises streamed through the destination's page.data."
+						},
+						{ "name": "contained", "type": "boolean", "default": "false" },
+						{ "name": "value", "type": "number (0–100)", "default": "—" },
+						{ "name": "ariaLabel", "type": "string", "default": "Navigation progress" },
+						{ "name": "onStart", "type": "() => void", "default": "—" },
+						{ "name": "onComplete", "type": "() => void", "default": "—" },
+						{ "name": "class", "type": "string", "default": "—" },
+						{ "name": "indicatorClass", "type": "string", "default": "—" }
 					]
 				}
 			}

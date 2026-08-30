@@ -2,7 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-	import { components } from '$lib/docs/catalog';
+	import { components } from '$lib/docs/component-metadata';
 
 	let { children }: { children: Snippet } = $props();
 </script>

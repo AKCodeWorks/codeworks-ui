@@ -3,7 +3,7 @@
 	"name": "context-menu",
 	"title": "Context Menu",
 	"type": "registry:ui",
-	"description": "A composable right-click menu with nested submenus, selectable items, shortcuts, and icon-friendly actions.",
+	"description": "A composable context menu opened by right-clicking on desktop or long-pressing on mobile, with nested submenus, selectable items, shortcuts, and icon-friendly actions.",
 	"dependencies": [
 		"bits-ui@^2.19.0"
 	],
@@ -15,7 +15,7 @@
 	],
 	"meta": {
 		"docs": {
-			"usage": "Compose Root, Trigger, Content, and Item using the ContextMenu namespace. Add Sub, SubTrigger, and SubContent for any depth of nested menu. CheckboxItem and RadioGroup provide persistent selection state through Svelte bindings. For action icons, import components from the icon library configured by shadcn and render them directly inside an Item or SubTrigger; the menu automatically sizes and aligns SVG icons.",
+			"usage": "Compose Root, Trigger, Content, and Item using the ContextMenu namespace. Tell users to right-click the trigger on desktop or long-press it on mobile. Add Sub, SubTrigger, and SubContent for any depth of nested menu. CheckboxItem and RadioGroup provide persistent selection state through Svelte bindings. For action icons, import components from the icon library configured by shadcn and render them directly inside an Item or SubTrigger; the menu automatically sizes and aligns SVG icons.",
 			"moreExamples": [
 				{
 					"name": "nested",

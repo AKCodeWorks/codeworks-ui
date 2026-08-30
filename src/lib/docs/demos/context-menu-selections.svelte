@@ -24,7 +24,9 @@
 			<div class="flex items-center justify-between border-b border-border px-5 py-4">
 				<div>
 					<p class="font-medium">Recent projects</p>
-					<p class="text-sm text-muted-foreground">Right-click to change this view</p>
+					<p class="text-sm text-muted-foreground">
+						Right-click on desktop or long-press on mobile to change this view
+					</p>
 				</div>
 				<Settings2Icon class="size-5 text-muted-foreground" />
 			</div>

@@ -1,0 +1,155 @@
+{
+	"$schema": "https://shadcn-svelte.com/schema/registry-item.json",
+	"name": "navigation-progress",
+	"title": "Navigation Progress",
+	"type": "registry:ui",
+	"description": "A lifecycle-aware progress bar for SvelteKit navigation with top and bottom placement.",
+	"registryDependencies": [
+		"utils"
+	],
+	"meta": {
+		"docs": {
+			"usage": [
+				"Mount NavigationProgress once in src/routes/+layout.svelte so it remains active across page changes.",
+				"Navigation and top-level streamed promises returned from load are tracked automatically.",
+				"Use waitFor for remote queries or other async work. For SSE, resolve it after the first meaningful event—the maxWaitTime safety limit prevents a stalled stream from holding the bar forever."
+			],
+			"moreExamples": [
+				{
+					"name": "bottom",
+					"title": "Bottom placement",
+					"description": "Place the progress indicator along the bottom edge of the viewport or a contained application shell."
+				},
+				{
+					"name": "customization",
+					"title": "Controlled and customized",
+					"description": "Control progress directly and customize its thickness and CSS color for non-navigation work."
+				}
+			],
+			"api": [
+				{
+					"name": "position",
+					"type": "top | bottom",
+					"default": "top"
+				},
+				{
+					"name": "maxProgress",
+					"type": "number (1–99)",
+					"default": "90"
+				},
+				{
+					"name": "initialProgress",
+					"type": "number",
+					"default": "8"
+				},
+				{
+					"name": "trickleInterval",
+					"type": "number (milliseconds)",
+					"default": "250"
+				},
+				{
+					"name": "transitionDuration",
+					"type": "number (milliseconds)",
+					"default": "200"
+				},
+				{
+					"name": "completionDelay",
+					"type": "number (milliseconds)",
+					"default": "180"
+				},
+				{
+					"name": "minDisplayTime",
+					"type": "number (milliseconds)",
+					"default": "0",
+					"description": "Minimum time the bar remains visible, including fast navigations."
+				},
+				{
+					"name": "waitFor",
+					"type": "PromiseLike | () => PromiseLike",
+					"default": "—",
+					"description": "Additional promise to await before completing, such as a remote query or the first SSE event."
+				},
+				{
+					"name": "maxWaitTime",
+					"type": "number (milliseconds)",
+					"default": "30000",
+					"description": "Safety timeout for streamed or explicit async work. Set to 0 to disable it."
+				},
+				{
+					"name": "height",
+					"type": "number (pixels)",
+					"default": "3"
+				},
+				{
+					"name": "color",
+					"type": "CSS color",
+					"default": "shadcn primary"
+				},
+				{
+					"name": "zIndex",
+					"type": "number",
+					"default": "9999"
+				},
+				{
+					"name": "trackNavigation",
+					"type": "boolean",
+					"default": "true",
+					"description": "Starts and completes from SvelteKit's client-side navigation lifecycle."
+				},
+				{
+					"name": "trackPageData",
+					"type": "boolean",
+					"default": "true",
+					"description": "Waits for top-level promises streamed through the destination's page.data."
+				},
+				{
+					"name": "contained",
+					"type": "boolean",
+					"default": "false"
+				},
+				{
+					"name": "value",
+					"type": "number (0–100)",
+					"default": "—"
+				},
+				{
+					"name": "ariaLabel",
+					"type": "string",
+					"default": "Navigation progress"
+				},
+				{
+					"name": "onStart",
+					"type": "() => void",
+					"default": "—"
+				},
+				{
+					"name": "onComplete",
+					"type": "() => void",
+					"default": "—"
+				},
+				{
+					"name": "class",
+					"type": "string",
+					"default": "—"
+				},
+				{
+					"name": "indicatorClass",
+					"type": "string",
+					"default": "—"
+				}
+			]
+		}
+	},
+	"files": [
+		{
+			"content": "<script module lang=\"ts\">\n\timport type { HTMLAttributes } from 'svelte/elements';\n\n\texport type NavigationProgressPosition = 'top' | 'bottom';\n\texport type NavigationProgressWaitFor =\n\t\tPromiseLike<unknown> | (() => PromiseLike<unknown> | undefined | void);\n\n\texport type NavigationProgressProps = Omit<HTMLAttributes<HTMLDivElement>, 'color'> & {\n\t\tposition?: NavigationProgressPosition;\n\t\tmaxProgress?: number;\n\t\tinitialProgress?: number;\n\t\ttrickleInterval?: number;\n\t\ttransitionDuration?: number;\n\t\tcompletionDelay?: number;\n\t\tminDisplayTime?: number;\n\t\twaitFor?: NavigationProgressWaitFor;\n\t\tmaxWaitTime?: number;\n\t\theight?: number;\n\t\tcolor?: string;\n\t\tzIndex?: number;\n\t\ttrackNavigation?: boolean;\n\t\ttrackPageData?: boolean;\n\t\tcontained?: boolean;\n\t\tvalue?: number;\n\t\tariaLabel?: string;\n\t\tonStart?: () => void;\n\t\tonComplete?: () => void;\n\t\tindicatorClass?: string;\n\t\tclass?: string;\n\t};\n</script>\n\n<script lang=\"ts\">\n\timport { onNavigate } from '$app/navigation';\n\timport { page } from '$app/state';\n\timport { onDestroy } from 'svelte';\n\timport { cn } from '$UTILS$.js';\n\n\tlet {\n\t\tposition = 'top',\n\t\tmaxProgress = 90,\n\t\tinitialProgress = 8,\n\t\ttrickleInterval = 250,\n\t\ttransitionDuration = 200,\n\t\tcompletionDelay = 180,\n\t\tminDisplayTime = 0,\n\t\twaitFor,\n\t\tmaxWaitTime = 30_000,\n\t\theight = 3,\n\t\tcolor,\n\t\tzIndex = 9999,\n\t\ttrackNavigation = true,\n\t\ttrackPageData = true,\n\t\tcontained = false,\n\t\tvalue,\n\t\tariaLabel = 'Navigation progress',\n\t\tonStart,\n\t\tonComplete,\n\t\tindicatorClass,\n\t\tclass: className,\n\t\t...restProps\n\t}: NavigationProgressProps = $props();\n\n\tlet progress = $state(0);\n\tlet visible = $state(false);\n\tlet trickleTimer: ReturnType<typeof setInterval> | undefined;\n\tlet completionTimer: ReturnType<typeof setTimeout> | undefined;\n\tlet resetTimer: ReturnType<typeof setTimeout> | undefined;\n\tlet minimumTimer: ReturnType<typeof setTimeout> | undefined;\n\tlet startedAt = 0;\n\tlet navigationId = 0;\n\n\tconst ceiling = $derived(clamp(maxProgress, Math.max(1, initialProgress), 99));\n\tconst displayProgress = $derived(value === undefined ? progress : clamp(value, 0, 100));\n\tconst displayVisible = $derived(value === undefined ? visible : value > 0);\n\n\tfunction clamp(input: number, minimum: number, maximum: number) {\n\t\treturn Math.min(maximum, Math.max(minimum, input));\n\t}\n\n\tfunction clearTrickleTimer() {\n\t\tif (trickleTimer === undefined) return;\n\t\tclearInterval(trickleTimer);\n\t\ttrickleTimer = undefined;\n\t}\n\n\tfunction clearCompletionTimer() {\n\t\tif (completionTimer === undefined) return;\n\t\tclearTimeout(completionTimer);\n\t\tcompletionTimer = undefined;\n\t}\n\n\tfunction clearResetTimer() {\n\t\tif (resetTimer === undefined) return;\n\t\tclearTimeout(resetTimer);\n\t\tresetTimer = undefined;\n\t}\n\n\tfunction clearMinimumTimer() {\n\t\tif (minimumTimer === undefined) return;\n\t\tclearTimeout(minimumTimer);\n\t\tminimumTimer = undefined;\n\t}\n\n\tfunction advance() {\n\t\tconst remaining = ceiling - progress;\n\t\tif (remaining <= 0.25) {\n\t\t\tprogress = ceiling;\n\t\t\tclearTrickleTimer();\n\t\t\treturn;\n\t\t}\n\n\t\tprogress = Math.min(ceiling, progress + Math.max(0.25, remaining * 0.08));\n\t}\n\n\tfunction start() {\n\t\tclearCompletionTimer();\n\t\tclearResetTimer();\n\t\tclearMinimumTimer();\n\t\tclearTrickleTimer();\n\t\tstartedAt = performance.now();\n\t\tprogress = clamp(initialProgress, 1, ceiling);\n\t\tvisible = true;\n\t\tonStart?.();\n\n\t\ttrickleTimer = setInterval(advance, Math.max(50, trickleInterval));\n\t}\n\n\tfunction finish() {\n\t\tclearTrickleTimer();\n\t\tprogress = 100;\n\t\tonComplete?.();\n\n\t\tcompletionTimer = setTimeout(\n\t\t\t() => {\n\t\t\t\tvisible = false;\n\t\t\t\tcompletionTimer = undefined;\n\t\t\t\tresetTimer = setTimeout(\n\t\t\t\t\t() => {\n\t\t\t\t\t\tprogress = 0;\n\t\t\t\t\t\tresetTimer = undefined;\n\t\t\t\t\t},\n\t\t\t\t\tMath.max(0, transitionDuration)\n\t\t\t\t);\n\t\t\t},\n\t\t\tMath.max(0, completionDelay)\n\t\t);\n\t}\n\n\tfunction complete() {\n\t\tconst remaining = Math.max(0, minDisplayTime - (performance.now() - startedAt));\n\t\tif (remaining === 0) {\n\t\t\tfinish();\n\t\t\treturn;\n\t\t}\n\n\t\tminimumTimer = setTimeout(() => {\n\t\t\tminimumTimer = undefined;\n\t\t\tfinish();\n\t\t}, remaining);\n\t}\n\n\tasync function waitForPageWork() {\n\t\tconst pending: PromiseLike<unknown>[] = [];\n\n\t\tif (trackPageData) {\n\t\t\tfor (const value of Object.values(page.data)) {\n\t\t\t\tif (isPromiseLike(value)) pending.push(value);\n\t\t\t}\n\t\t}\n\n\t\ttry {\n\t\t\tconst additionalWork = typeof waitFor === 'function' ? waitFor() : waitFor;\n\t\t\tif (isPromiseLike(additionalWork) && !pending.includes(additionalWork)) {\n\t\t\t\tpending.push(additionalWork);\n\t\t\t}\n\t\t} catch {\n\t\t\t// A readiness callback should not prevent navigation from completing.\n\t\t}\n\n\t\tif (pending.length === 0) return;\n\n\t\tlet timeout: ReturnType<typeof setTimeout> | undefined;\n\t\tconst safetyLimit = Math.max(0, maxWaitTime);\n\t\tconst pageWork = Promise.allSettled(pending.map((work) => Promise.resolve(work)));\n\n\t\tif (safetyLimit === 0) {\n\t\t\tawait pageWork;\n\t\t\treturn;\n\t\t}\n\n\t\tawait Promise.race([\n\t\t\tpageWork,\n\t\t\tnew Promise<void>((resolve) => {\n\t\t\t\ttimeout = setTimeout(resolve, safetyLimit);\n\t\t\t})\n\t\t]);\n\n\t\tif (timeout !== undefined) clearTimeout(timeout);\n\t}\n\n\tfunction isPromiseLike(value: unknown): value is PromiseLike<unknown> {\n\t\tif ((typeof value !== 'object' || value === null) && typeof value !== 'function') return false;\n\t\treturn typeof (value as { then?: unknown }).then === 'function';\n\t}\n\n\tasync function completeAfterPageWork(id: number) {\n\t\tawait waitForPageWork();\n\t\tif (id === navigationId) complete();\n\t}\n\n\tonNavigate(() => {\n\t\tif (!trackNavigation || value !== undefined) return;\n\n\t\tconst id = ++navigationId;\n\t\tstart();\n\t\treturn () => {\n\t\t\tvoid completeAfterPageWork(id);\n\t\t};\n\t});\n\n\tonDestroy(() => {\n\t\tnavigationId += 1;\n\t\tclearTrickleTimer();\n\t\tclearCompletionTimer();\n\t\tclearResetTimer();\n\t\tclearMinimumTimer();\n\t});\n</script>\n\n<div\n\t{...restProps}\n\tdata-slot=\"navigation-progress\"\n\tdata-position={position}\n\tdata-state={displayVisible ? 'loading' : 'idle'}\n\trole=\"progressbar\"\n\taria-label={ariaLabel}\n\taria-hidden={!displayVisible}\n\taria-valuemin=\"0\"\n\taria-valuemax=\"100\"\n\taria-valuenow={Math.round(displayProgress)}\n\tclass={cn(\n\t\t'pointer-events-none inset-x-0 overflow-hidden transition-opacity motion-reduce:transition-none',\n\t\tcontained ? 'absolute' : 'fixed',\n\t\tposition === 'top' ? 'top-0' : 'bottom-0',\n\t\tdisplayVisible ? 'opacity-100' : 'opacity-0',\n\t\tclassName\n\t)}\n\tstyle:height={`${Math.max(1, height)}px`}\n\tstyle:z-index={zIndex}\n\tstyle:transition-duration={`${Math.max(0, transitionDuration)}ms`}\n>\n\t<div\n\t\tdata-slot=\"navigation-progress-indicator\"\n\t\tclass={cn(\n\t\t\t'h-full w-full origin-left bg-primary shadow-sm transition-transform ease-out motion-reduce:transition-none',\n\t\t\tindicatorClass\n\t\t)}\n\t\tstyle:background-color={color}\n\t\tstyle:transform={`scaleX(${displayProgress / 100})`}\n\t\tstyle:transition-duration={`${Math.max(0, transitionDuration)}ms`}\n\t></div>\n</div>\n",
+			"type": "registry:ui",
+			"target": "navigation-progress/navigation-progress.svelte"
+		},
+		{
+			"content": "export { default as NavigationProgress } from './navigation-progress.svelte';\nexport type {\n\tNavigationProgressPosition,\n\tNavigationProgressProps,\n\tNavigationProgressWaitFor\n} from './navigation-progress.svelte';\n",
+			"type": "registry:ui",
+			"target": "navigation-progress/index.ts"
+		}
+	]
+}
